@@ -1,0 +1,21 @@
+{
+  "name": "schematic-generator",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "cosmos"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.1.3",
+    "@types/bun": "latest",
+    "bun-match-svg": "^0.0.12",
+    "circuit-to-svg": "^0.0.175",
+    "react-cosmos": "^7.0.0",
+    "react-cosmos-plugin-vite": "^7.0.0",
+    "tscircuit": "^0.0.578",
+    "vite": "^7.0.6"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
