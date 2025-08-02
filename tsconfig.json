@@ -21,6 +21,8 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
 
+    "types": ["tscircuit"],
+
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
