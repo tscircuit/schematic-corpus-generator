@@ -19,29 +19,29 @@ function parseCliArgs(): CodegenOptions {
       "pin-count": {
         type: "string",
         short: "p",
-        default: "3"
+        default: "3",
       },
       "output-dir": {
         type: "string",
         short: "o",
-        default: "./generated-designs"
+        default: "./generated-designs",
       },
       "max-components": {
         type: "string",
         short: "m",
-        default: "10"
+        default: "10",
       },
-      "verbose": {
+      verbose: {
         type: "boolean",
         short: "v",
-        default: false
+        default: false,
       },
-      "help": {
+      help: {
         type: "boolean",
-        short: "h"
-      }
+        short: "h",
+      },
     },
-    allowPositionals: true
+    allowPositionals: true,
   })
 
   if (values.help) {
@@ -78,36 +78,37 @@ Example:
     pinCount,
     outputDir: values["output-dir"] || "./generated-designs",
     maxComponents,
-    verbose: values.verbose || false
+    verbose: values.verbose || false,
   }
 }
 
 async function main() {
   const options = parseCliArgs()
-  
+
   console.log(`🚀 Starting codegen for pin count ${options.pinCount}`)
   console.log(`📁 Output directory: ${options.outputDir}`)
   console.log(`🔧 Max components per design: ${options.maxComponents}`)
-  console.log(`📝 Verbose logging: ${options.verbose ? 'enabled' : 'disabled'}`)
+  console.log(`📝 Verbose logging: ${options.verbose ? "enabled" : "disabled"}`)
   console.log("")
 
   try {
     // Ensure output directory exists
     await mkdir(options.outputDir, { recursive: true })
-    
+
     // Generate all valid designs
     const validDesigns = await generateAllValidDesigns({
       pinCount: options.pinCount,
       maxComponents: options.maxComponents,
       verbose: options.verbose,
-      outputDir: options.outputDir
+      outputDir: options.outputDir,
     })
 
     console.log("")
     console.log(`✅ Generation complete!`)
-    console.log(`📊 Generated ${validDesigns.length} valid designs for pin count ${options.pinCount}`)
+    console.log(
+      `📊 Generated ${validDesigns.length} valid designs for pin count ${options.pinCount}`,
+    )
     console.log(`📁 Files saved to: ${options.outputDir}`)
-
   } catch (error) {
     console.error("❌ Error during generation:", error)
     process.exit(1)
