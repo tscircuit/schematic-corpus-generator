@@ -175,14 +175,42 @@ export default () => {
       </div>
       {error && <div style={{ color: "red" }}>{error.toString()}</div>}
       {circuitJson && (
-        <SchematicViewer
-          key={`${pinCount}-${variant}`}
-          circuitJson={circuitJson}
-          containerStyle={{
-            height: 500,
-          }}
-          debugGrid
-        />
+        <div>
+          <SchematicViewer
+            key={`${pinCount}-${variant}`}
+            circuitJson={circuitJson}
+            containerStyle={{
+              height: 500,
+            }}
+            debugGrid
+          />
+          <button
+            onClick={() => {
+              const dataStr = JSON.stringify(circuitJson, null, 2)
+              const dataBlob = new Blob([dataStr], { type: 'application/json' })
+              const url = URL.createObjectURL(dataBlob)
+              const link = document.createElement('a')
+              link.href = url
+              link.download = `circuit-p${pinCount}-v${variant}.json`
+              document.body.appendChild(link)
+              link.click()
+              document.body.removeChild(link)
+              URL.revokeObjectURL(url)
+            }}
+            style={{
+              marginTop: '10px',
+              padding: '8px 16px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '14px'
+            }}
+          >
+            Download Circuit JSON
+          </button>
+        </div>
       )}
     </div>
   )
