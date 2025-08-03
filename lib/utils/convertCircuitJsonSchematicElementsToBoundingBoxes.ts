@@ -69,8 +69,8 @@ export function convertCircuitJsonSchematicElementsToBoundingBoxes(
       // schematic_net_label is treated as a 0.4x0.2 box around the center
       // Net labels are typically wider than they are tall
       const { center, anchor_position } = element
-      const halfWidth = Math.abs(center.x - anchor_position!.x)
-      const halfHeight = Math.abs(center.y - anchor_position!.y)
+      const halfWidth = Math.max(0.1, Math.abs(center.x - anchor_position!.x))
+      const halfHeight = Math.max(0.1, Math.abs(center.y - anchor_position!.y))
 
       boundingBoxes.push({
         minX: center.x - halfWidth,
