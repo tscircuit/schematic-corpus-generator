@@ -12,7 +12,7 @@ export interface BoundingBox {
 
 /**
  * Converts Circuit JSON schematic elements into bounding boxes for collision detection
- * Supports schematic_component and schematic_text elements
+ * Supports schematic_component, schematic_text, and schematic_net_label elements
  */
 export function convertCircuitJsonSchematicElementsToBoundingBoxes(
   elements: AnyCircuitElement[],
@@ -64,6 +64,21 @@ export function convertCircuitJsonSchematicElementsToBoundingBoxes(
         elementId: element.schematic_text_id,
         elementType: "schematic_text",
         schematicComponentId: element.schematic_component_id,
+      })
+    } else if (element.type === "schematic_net_label") {
+      // schematic_net_label is treated as a 0.4x0.2 box around the center
+      // Net labels are typically wider than they are tall
+      const { center, anchor_position } = element
+      const halfWidth = Math.abs(center.x - anchor_position!.x)
+      const halfHeight = Math.abs(center.y - anchor_position!.y)
+
+      boundingBoxes.push({
+        minX: center.x - halfWidth,
+        minY: center.y - halfHeight,
+        maxX: center.x + halfWidth,
+        maxY: center.y + halfHeight,
+        elementId: element.schematic_net_label_id,
+        elementType: "schematic_net_label",
       })
     }
   }
