@@ -1,13 +1,9 @@
-import { TwoPinResistorBridge } from "./TwoPinResistorBridge"
 import { TwoPinCapacitor } from "./TwoPinCapacitor"
-import { TwoPinVoltageDivider } from "./TwoPinVoltageDivider"
 import type { SmallPatternProps, SmallPatternComponent } from "../types"
 
 const PATTERNS: SmallPatternComponent[] = [
   (props: SmallPatternProps) => null,
-  TwoPinResistorBridge,
   TwoPinCapacitor,
-  TwoPinVoltageDivider,
 ]
 
 export const Pattern2Pin = (props: {
