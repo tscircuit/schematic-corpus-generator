@@ -24,11 +24,18 @@ export function convertCircuitJsonSchematicElementsToBoundingBoxes(
       const { center, size } = element
       const halfWidth = size.width / 2
       const halfHeight = size.height / 2
+      
+      // Check if symbol has vertical orientation (_up or _down) which would render labels to the right
+      const hasVerticalSymbol = element.symbol_name && 
+        (element.symbol_name.includes("_up") || element.symbol_name.includes("_down"))
+      
+      // Add extra space on the right for vertical symbols to account for rendered labels
+      const labelExtension = hasVerticalSymbol ? 0.3 : 0
 
       boundingBoxes.push({
         minX: center.x - halfWidth,
         minY: center.y - halfHeight,
-        maxX: center.x + halfWidth,
+        maxX: center.x + halfWidth + labelExtension,
         maxY: center.y + halfHeight,
         elementId: element.schematic_component_id,
         schematicComponentId: element.schematic_component_id,
