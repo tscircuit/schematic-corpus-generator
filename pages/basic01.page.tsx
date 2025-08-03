@@ -1,8 +1,10 @@
 import { RootCircuit } from "tscircuit"
 import { SchematicViewer } from "@tscircuit/schematic-viewer"
-import { Toolbar } from "./components/Toolbar"
+import { Toolbar } from "../lib/components/Toolbar"
 import { GeneratedBoard } from "../lib/components/GeneratedBoard"
 import { useEffect, useMemo, useState } from "react"
+
+const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 
 export default () => {
   const [pinCount, setPinCount] = useState(3)
@@ -11,9 +13,9 @@ export default () => {
     return stored !== null ? Number(stored) : 1
   })
 
-  const [allSlideVariations, setAllSlideVariations] = useState([
-    [0, 0, 0] as [number, number, number],
-  ])
+  const [allSlideVariations, setAllSlideVariations] = useState(
+    range(pinCount).map(() => [0, 0, 0] as [number, number, number]),
+  )
 
   useEffect(() => {
     localStorage.setItem("lastVariant", String(variant))

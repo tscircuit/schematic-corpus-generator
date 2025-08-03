@@ -1,5 +1,5 @@
 import { Pattern1Pin } from "../small-patterns/patterns-1pin/Pattern1Pin"
-import { getSubVariants } from "../utils/getSubVariants"
+import { generatePatternApplications } from "../utils/variantGenerator"
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 
@@ -12,16 +12,7 @@ export const GeneratedBoard = ({
   pinCount: number
   allSlideVariations: Array<[number, number, number]>
 }) => {
-  const [targetPin, patternVariant] = getSubVariants(
-    variant,
-    [pinCount, Pattern1Pin.NUM_VARIANTS],
-    (subVariants) => {
-      const [pinIndex, patternVariant] = subVariants
-      if (pinIndex === 0 && patternVariant === 0) return false
-      if (patternVariant === 0) return true
-      return false
-    },
-  )
+  const patternApplications = generatePatternApplications(variant, pinCount)
 
   return (
     <board routingDisabled>
@@ -37,12 +28,15 @@ export const GeneratedBoard = ({
         schY={0}
         schRotation={0}
       />
-      <Pattern1Pin
-        pinCount={pinCount}
-        pins={[targetPin! + 1]}
-        variant={patternVariant!}
-        slideVariations={allSlideVariations[0]!}
-      />
+      {patternApplications.map((application, index) => (
+        <Pattern1Pin
+          key={`pattern-${application.targetPin}-${application.patternVariant}`}
+          pinCount={pinCount}
+          pins={[application.targetPin + 1]}
+          variant={application.patternVariant}
+          slideVariations={allSlideVariations[index % allSlideVariations.length]!}
+        />
+      ))}
     </board>
   )
 }

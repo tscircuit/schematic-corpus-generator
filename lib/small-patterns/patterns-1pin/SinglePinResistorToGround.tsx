@@ -10,7 +10,7 @@ export const SinglePinResistorToGround = (props: SmallPatternProps) => {
     <resistor
       name={`R${pin}`}
       resistance={1000}
-      schX={pinPosition.x + 1 + slideVariations[0] * 0.2}
+      schX={pinPosition.x + 0.4 + slideVariations[0] * 0.2}
       schY={pinPosition.y - 1.2}
       schRotation="-90deg"
       connections={{

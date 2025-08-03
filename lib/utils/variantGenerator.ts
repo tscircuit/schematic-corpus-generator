@@ -9,44 +9,47 @@ export interface PatternApplication {
 
 /**
  * Generates the pattern applications for a given variant number.
- * This will be extended to support multiple patterns per schematic.
+ * Supports multiple Pattern1Pin applications per schematic.
  */
 export const generatePatternApplications = (
   variant: number,
   pinCount: number,
 ): PatternApplication[] => {
-  const [targetPin, patternVariant] = getSubVariants(
+  // Generate all combinations: each pin can have any pattern variant (including 0 = no pattern)
+  const subVariantCounts = Array(pinCount).fill(Pattern1Pin.NUM_VARIANTS)
+  
+  const patternSelections = getSubVariants(
     variant,
-    [pinCount, Pattern1Pin.NUM_VARIANTS],
+    subVariantCounts,
     (subVariants) => {
-      const [pinIndex, patternVariant] = subVariants
-      if (pinIndex === 0 && patternVariant === 0) return false
-      if (patternVariant === 0) return true
-      return false
+      // Skip the case where all pins have no pattern (all zeros)
+      return subVariants.every(v => v === 0)
     },
   )
 
-  return [
-    {
-      targetPin: targetPin!,
-      patternVariant: patternVariant!,
-      patternType: "Pattern1Pin",
-    },
-  ]
+  const applications: PatternApplication[] = []
+  
+  for (let pinIndex = 0; pinIndex < pinCount; pinIndex++) {
+    const patternVariant = patternSelections[pinIndex]!
+    
+    // Only add patterns that are not variant 0 (no pattern)
+    if (patternVariant !== 0) {
+      applications.push({
+        targetPin: pinIndex,
+        patternVariant,
+        patternType: "Pattern1Pin",
+      })
+    }
+  }
+
+  return applications
 }
 
 /**
  * Calculates the total number of valid variants for a given pin count.
- * This accounts for the skip logic in getSubVariants.
+ * Each pin can have any of the Pattern1Pin variants, excluding the all-zeros case.
  */
 export const getTotalVariants = (pinCount: number): number => {
-  let count = 0
-  for (let i = 0; i < pinCount; i++) {
-    for (let j = 0; j < Pattern1Pin.NUM_VARIANTS; j++) {
-      if (i === 0 && j === 0) continue // Skip the base case
-      if (j === 0) continue // Skip pattern variant 0 for other pins
-      count++
-    }
-  }
-  return count
+  const totalCombinations = Pattern1Pin.NUM_VARIANTS ** pinCount
+  return totalCombinations - 1 // Subtract 1 for the all-zeros case
 }
