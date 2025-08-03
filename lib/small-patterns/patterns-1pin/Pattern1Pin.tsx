@@ -3,6 +3,9 @@ import { SinglePinResistorToGround } from "./SinglePinResistorToGround"
 import { SinglePinToVoltageDivider } from "./SinglePinToVoltageDivider"
 import { SinglePinResistorToSignal } from "./SinglePinResistorToSignal"
 import type { SmallPatternProps, SmallPatternComponent } from "../types"
+import { SinglePin2CapacitorsToGround } from "./SinglePin2CapacitorsToGround"
+import { SinglePin3CapacitorsToGround } from "./SinglePin3CapacitorsToGround"
+import { SinglePin4CapacitorsToGround } from "./SinglePin4CapacitorsToGround"
 
 const PATTERNS: SmallPatternComponent[] = [
   (props: SmallPatternProps) => null,
@@ -10,6 +13,9 @@ const PATTERNS: SmallPatternComponent[] = [
   SinglePinResistorToGround,
   SinglePinToVoltageDivider,
   SinglePinResistorToSignal,
+  SinglePin2CapacitorsToGround,
+  SinglePin3CapacitorsToGround,
+  SinglePin4CapacitorsToGround,
 ]
 
 export const Pattern1Pin = (props: {
