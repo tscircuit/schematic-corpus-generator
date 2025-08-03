@@ -16,7 +16,7 @@ export const Pattern1Pin = (props: {
   pinCount: number
   pins: [number]
   variant: number
-  slideVariations: [number, number]
+  slideVariations: [number, number, number]
 }) => {
   const { pins, variant, pinCount } = props
 

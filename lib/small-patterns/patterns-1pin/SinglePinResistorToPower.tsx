@@ -4,15 +4,16 @@ import type { SmallPatternProps } from "../types"
 export const SinglePinResistorToPower = ({
   pins,
   pinCount,
+  slideVariations,
 }: SmallPatternProps) => {
   const pin = pins[0]!
-  const pinPosition = getPinPosition(pin, pinCount)
+  const pinPosition = getPinPosition(1, pinCount)
 
   return (
     <resistor
       name={`R${pin}`}
       resistance={1000}
-      schX={pinPosition.x + 1}
+      schX={pinPosition.x + 1 + slideVariations[0] * 0.2}
       schY={pinPosition.y + 1}
       schRotation="90deg"
       connections={{

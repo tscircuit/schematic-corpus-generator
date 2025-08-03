@@ -39,7 +39,7 @@ export const GeneratedBoard = ({
 }: {
   variant: number
   pinCount: number
-  allSlideVariations: Array<[number, number]>
+  allSlideVariations: Array<[number, number, number]>
 }) => {
   const [targetPin, patternVariant] = getSubVariants(
     variant,
@@ -70,7 +70,7 @@ export const GeneratedBoard = ({
         pinCount={pinCount}
         pins={[targetPin! + 1]}
         variant={patternVariant!}
-        slideVariations={[0, 0]}
+        slideVariations={allSlideVariations[0]!}
       />
     </board>
   )
@@ -108,7 +108,7 @@ export default () => {
       console.error(e)
       return [null, e as any]
     }
-  }, [variant, pinCount])
+  }, [variant, pinCount, allSlideVariations])
 
   return (
     <div>

@@ -5,7 +5,7 @@ export const Toolbar = (props: {
   onChangeVariant: (newVariant: number) => void
   onChangePinCount: (newPinCount: number) => void
   onChangeAllSlideVariations: (
-    newAllSlideVariations: Array<[number, number]>,
+    newAllSlideVariations: Array<[number, number, number]>,
   ) => void
 }) => {
   const { variant, pinCount } = props
