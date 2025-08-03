@@ -35,7 +35,7 @@ export default () => (
     name="C2_1"
     capacitance="100nF"
     schX="1"
-    schY="0.10000000000000031"
+    schY="-2.5"
     schRotation="-90deg"
     connections={{pin1: "U1.2", pin2: "net.GND"}}
     />
@@ -43,7 +43,7 @@ export default () => (
     name="C2_2"
     capacitance="100nF"
     schX="2"
-    schY="0.10000000000000031"
+    schY="-2.5"
     schRotation="-90deg"
     connections={{pin1: "U1.2", pin2: "net.GND"}}
     />
@@ -51,7 +51,7 @@ export default () => (
     name="C2_3"
     capacitance="100nF"
     schX="3"
-    schY="0.10000000000000031"
+    schY="-2.5"
     schRotation="-90deg"
     connections={{pin1: "U1.2", pin2: "net.GND"}}
     />
@@ -59,7 +59,7 @@ export default () => (
     name="C2_4"
     capacitance="100nF"
     schX="4"
-    schY="0.10000000000000031"
+    schY="-2.5"
     schRotation="-90deg"
     connections={{pin1: "U1.2", pin2: "net.GND"}}
     />

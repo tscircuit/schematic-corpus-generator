@@ -24,7 +24,7 @@ export default () => (
     name="R2"
     resistance="1000"
     schX="1.6"
-    schY="-0.5"
+    schY="-0.7000000000000001"
     schRotation="0deg"
     connections={{pin1: "U1.2", pin2: "net.SIG2"}}
     />
