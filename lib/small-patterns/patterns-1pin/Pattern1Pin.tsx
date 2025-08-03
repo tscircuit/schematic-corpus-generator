@@ -6,9 +6,10 @@ import type { SmallPatternProps, SmallPatternComponent } from "../types"
 import { SinglePin2CapacitorsToGround } from "./SinglePin2CapacitorsToGround"
 import { SinglePin3CapacitorsToGround } from "./SinglePin3CapacitorsToGround"
 import { SinglePin4CapacitorsToGround } from "./SinglePin4CapacitorsToGround"
+import { NullPattern } from "../NullPattern"
 
 const PATTERNS: SmallPatternComponent[] = [
-  (props: SmallPatternProps) => null,
+  NullPattern,
   SinglePinResistorToPower,
   SinglePinResistorToGround,
   SinglePinToVoltageDivider,
@@ -43,3 +44,13 @@ export const Pattern1Pin = (props: {
 
 Pattern1Pin.NUM_VARIANTS = PATTERNS.length
 Pattern1Pin.PATTERNS = PATTERNS
+Pattern1Pin.getCode = (props: SmallPatternProps) => {
+  const { pins, pinCount, slideVariations, variant } = props
+  const Pattern = PATTERNS[variant]
+
+  if (!Pattern) {
+    throw new Error(`Invalid variant: ${variant}`)
+  }
+
+  return Pattern.getCode(props)
+}

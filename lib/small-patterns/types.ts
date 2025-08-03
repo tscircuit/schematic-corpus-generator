@@ -39,4 +39,6 @@ export interface SmallPatternComponent {
    * usedSlideVariationDimensions: [0, 1, 2]
    */
   usedSlideVariationDimensions?: number[]
+
+  getCode(props: SmallPatternProps): string
 }
