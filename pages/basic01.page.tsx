@@ -35,9 +35,11 @@ const getSubVariants = (
 export const GeneratedBoard = ({
   variant,
   pinCount,
+  allSlideVariations,
 }: {
   variant: number
   pinCount: number
+  allSlideVariations: Array<[number, number]>
 }) => {
   const [targetPin, patternVariant] = getSubVariants(
     variant,
@@ -68,6 +70,7 @@ export const GeneratedBoard = ({
         pinCount={pinCount}
         pins={[targetPin! + 1]}
         variant={patternVariant!}
+        slideVariations={[0, 0]}
       />
     </board>
   )
@@ -80,6 +83,10 @@ export default () => {
     return stored !== null ? Number(stored) : 1
   })
 
+  const [allSlideVariations, setAllSlideVariations] = useState([
+    [0, 0, 0] as [number, number, number],
+  ])
+
   useEffect(() => {
     localStorage.setItem("lastVariant", String(variant))
   }, [variant])
@@ -88,12 +95,18 @@ export default () => {
     try {
       const circuit = new RootCircuit()
 
-      circuit.add(<GeneratedBoard variant={variant} pinCount={pinCount} />)
+      circuit.add(
+        <GeneratedBoard
+          variant={variant}
+          pinCount={pinCount}
+          allSlideVariations={allSlideVariations}
+        />,
+      )
 
       return [circuit.getCircuitJson(), null]
     } catch (e) {
       console.error(e)
-      return [null, e]
+      return [null, e as any]
     }
   }, [variant, pinCount])
 
@@ -102,8 +115,10 @@ export default () => {
       <Toolbar
         variant={variant}
         pinCount={pinCount}
+        allSlideVariations={allSlideVariations}
         onChangeVariant={setVariant}
         onChangePinCount={setPinCount}
+        onChangeAllSlideVariations={setAllSlideVariations}
       />
       {error && <div style={{ color: "red" }}>{error.toString()}</div>}
       {circuitJson && (

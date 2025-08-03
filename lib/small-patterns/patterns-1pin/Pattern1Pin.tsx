@@ -16,6 +16,7 @@ export const Pattern1Pin = (props: {
   pinCount: number
   pins: [number]
   variant: number
+  slideVariations: [number, number]
 }) => {
   const { pins, variant, pinCount } = props
 
@@ -25,7 +26,13 @@ export const Pattern1Pin = (props: {
     throw new Error(`Invalid variant: ${variant}`)
   }
 
-  return <Pattern pins={pins} pinCount={pinCount} />
+  return (
+    <Pattern
+      pins={pins}
+      pinCount={pinCount}
+      slideVariations={props.slideVariations}
+    />
+  )
 }
 
 Pattern1Pin.NUM_VARIANTS = PATTERNS.length
