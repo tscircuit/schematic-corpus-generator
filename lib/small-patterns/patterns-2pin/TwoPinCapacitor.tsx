@@ -8,8 +8,8 @@ export const TwoPinCapacitor: SmallPatternComponent = (
   const pin1 = pins[0]!
   const pin2 = pins[1]!
 
-  const pin1Position = getPinPosition(pin1 - 1, pinCount)
-  const pin2Position = getPinPosition(pin2 - 1, pinCount)
+  const pin1Position = getPinPosition(pin1, pinCount)
+  const pin2Position = getPinPosition(pin2, pinCount)
 
   const midY = (pin1Position.y + pin2Position.y) / 2
 

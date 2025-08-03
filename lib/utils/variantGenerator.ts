@@ -78,7 +78,7 @@ export const generatePatternApplications = (
       })
     } else {
       // 2-pin pattern
-      const pattern2PinVariant = choice - Pattern1Pin.NUM_VARIANTS + 1
+      const pattern2PinVariant = choice - Pattern1Pin.NUM_VARIANTS
       applications.push({
         targetPin: pinIndex,
         patternVariant: pattern2PinVariant,
