@@ -16,6 +16,7 @@
     "circuit-json": "^0.0.226",
     "circuit-to-svg": "^0.0.175",
     "ky": "^1.8.2",
+    "rbush": "^4.0.1",
     "react-cosmos": "^7.0.0",
     "react-cosmos-plugin-vite": "^7.0.0",
     "react-hot-toast": "^2.5.2",
