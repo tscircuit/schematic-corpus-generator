@@ -12,6 +12,22 @@
 // repeatedly during a single runtime.
 const combinationsCache = new Map<string, number[][]>()
 
+const generateCombinations = (
+  counts: number[],
+  current: number[] = [],
+): number[][] => {
+  if (current.length === counts.length) {
+    return [current]
+  }
+
+  const results: number[][] = []
+  const currentIndex = current.length
+  for (let i = 0; i < counts[currentIndex]!; i++) {
+    results.push(...generateCombinations(counts, [...current, i]))
+  }
+  return results
+}
+
 export const getSubVariants = (
   variant: number,
   subVariantCounts: number[],
@@ -19,22 +35,6 @@ export const getSubVariants = (
 ): number[] => {
   // Returns the sub-variant at the given variant index, skipping those for which shouldSkip returns true
   let count = 0
-
-  const generateCombinations = (
-    counts: number[],
-    current: number[] = [],
-  ): number[][] => {
-    if (current.length === counts.length) {
-      return [current]
-    }
-
-    const results: number[][] = []
-    const currentIndex = current.length
-    for (let i = 0; i < counts[currentIndex]!; i++) {
-      results.push(...generateCombinations(counts, [...current, i]))
-    }
-    return results
-  }
 
   const key = subVariantCounts.join(",")
   const allCombinations =
@@ -62,9 +62,13 @@ export class SubVariantGenerator {
   private subVariantCounts: number[]
   private shouldSkip?: (subVariants: number[]) => boolean
   private generatedVariants: Map<number, number[]> = new Map()
-  private currentIndex = 0
+  private currentVariantIndex = 0
   private maxIndex: number | null = null
-  private allCombinations: number[][] | null = null
+  private allCombinations: number[][]
+  // Index of the next element in `allCombinations` to examine. This lets us
+  // avoid re-scanning already-processed combinations and guarantees that every
+  // generated variant is cached exactly once.
+  private nextCombinationIndex = 0
 
   constructor(
     subVariantCounts: number[],
@@ -72,15 +76,19 @@ export class SubVariantGenerator {
   ) {
     this.subVariantCounts = subVariantCounts
     this.shouldSkip = shouldSkip
+
+    this.allCombinations =
+      combinationsCache.get(subVariantCounts.join(",")) ??
+      generateCombinations(subVariantCounts, [])
   }
 
   /**
    * Gets the next variant in sequence. Returns null if no more variants exist.
    */
   next(): number[] | null {
-    const result = this.get(this.currentIndex)
+    const result = this.get(this.currentVariantIndex)
     if (result !== null) {
-      this.currentIndex++
+      this.currentVariantIndex++
     }
     return result
   }
@@ -99,64 +107,20 @@ export class SubVariantGenerator {
       return null
     }
 
-    // Generate variants sequentially until we reach the requested index
-    this.ensureVariantExists(variantIndex)
+    while (!this.generatedVariants.has(variantIndex)) {
+      const subVariants = this.allCombinations[this.nextCombinationIndex]
+      if (subVariants === undefined) {
+        break
+      }
+      this.nextCombinationIndex++
+      if (this.shouldSkip?.(subVariants)) {
+        continue
+      }
+      const newVariantIndex = this.generatedVariants.size
+      this.generatedVariants.set(newVariantIndex, subVariants)
+    }
 
     return this.generatedVariants.get(variantIndex) ?? null
-  }
-
-  private ensureVariantExists(targetIndex: number): void {
-    // If we already have all combinations cached, use them directly
-    if (this.allCombinations === null) {
-      const key = this.subVariantCounts.join(",")
-      this.allCombinations =
-        combinationsCache.get(key) ??
-        (() => {
-          const combos = this.generateCombinations(this.subVariantCounts)
-          combinationsCache.set(key, combos)
-          return combos
-        })()
-    }
-
-    let count = 0
-    let lastValidIndex = -1
-
-    for (const subVariants of this.allCombinations) {
-      if (this.shouldSkip?.(subVariants)) continue
-
-      if (!this.generatedVariants.has(count)) {
-        this.generatedVariants.set(count, subVariants)
-      }
-
-      lastValidIndex = count
-
-      if (count === targetIndex) {
-        return
-      }
-
-      count++
-    }
-
-    // If we've processed all combinations, set the max index
-    if (this.maxIndex === null) {
-      this.maxIndex = lastValidIndex
-    }
-  }
-
-  private generateCombinations(
-    counts: number[],
-    current: number[] = [],
-  ): number[][] {
-    if (current.length === counts.length) {
-      return [current]
-    }
-
-    const results: number[][] = []
-    const currentIndex = current.length
-    for (let i = 0; i < counts[currentIndex]!; i++) {
-      results.push(...this.generateCombinations(counts, [...current, i]))
-    }
-    return results
   }
 
   /**

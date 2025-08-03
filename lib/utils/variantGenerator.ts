@@ -9,13 +9,47 @@ export interface PatternApplication {
   pins: number[] // Actual pin numbers that this pattern uses
 }
 
-/**
- * Represents a pattern choice for a specific pin position.
- * - 0: no pattern
- * - 1-Pattern1Pin.NUM_VARIANTS: 1-pin patterns
- * - Pattern1Pin.NUM_VARIANTS+1 to Pattern1Pin.NUM_VARIANTS+Pattern2Pin.NUM_VARIANTS: 2-pin patterns
- */
-type PatternChoice = number
+function shouldSkipVariant(pinCount: number, subVariants: number[]): boolean {
+  // Skip the case where all pins have no pattern (all zeros)
+  if (subVariants.every((v) => v === 0)) return true
+
+  // Skip invalid configurations where 2-pin patterns would overlap or go out of bounds
+  for (let i = 0; i < subVariants.length; i++) {
+    const choice = subVariants[i]!
+
+    // If this is a 2-pin pattern starting position
+    if (choice >= Pattern1Pin.NUM_VARIANTS) {
+      // Check if there's room for 2 pins
+      if (i >= pinCount - 1) return true // Not enough pins remaining
+
+      // Check if next pin is already occupied
+      const nextChoice = subVariants[i + 1]!
+      if (nextChoice !== 0) return true // Next pin is occupied
+    }
+  }
+
+  return false
+}
+
+type SubVariantCountsKey = string
+const cachedSubVariantGenerators = new Map<
+  SubVariantCountsKey,
+  SubVariantGenerator
+>()
+function getSubVariantGenerator(
+  pinCount: number,
+  subVariantCounts: number[],
+): SubVariantGenerator {
+  const key = subVariantCounts.join(",")
+  if (cachedSubVariantGenerators.has(key)) {
+    return cachedSubVariantGenerators.get(key)!
+  }
+  const generator = new SubVariantGenerator(subVariantCounts, (subVariants) =>
+    shouldSkipVariant(pinCount, subVariants),
+  )
+  cachedSubVariantGenerators.set(key, generator)
+  return generator
+}
 
 /**
  * Generates all possible pattern applications for a given pin configuration.
@@ -29,32 +63,9 @@ export const generatePatternApplications = (
   // - 1 to Pattern1Pin.NUM_VARIANTS-1: 1-pin patterns (variants 1 to NUM_VARIANTS-1)
   // - Pattern1Pin.NUM_VARIANTS to Pattern1Pin.NUM_VARIANTS+Pattern2Pin.NUM_VARIANTS-1: 2-pin patterns
   const maxPatternsPerPin = Pattern1Pin.NUM_VARIANTS + Pattern2Pin.NUM_VARIANTS
-  const subVariantCounts = Array(pinCount).fill(maxPatternsPerPin)
+  const subVariantCounts: number[] = Array(pinCount).fill(maxPatternsPerPin)
 
-  const generator = new SubVariantGenerator(
-    subVariantCounts,
-    (subVariants) => {
-      // Skip the case where all pins have no pattern (all zeros)
-      if (subVariants.every((v) => v === 0)) return true
-
-      // Skip invalid configurations where 2-pin patterns would overlap or go out of bounds
-      for (let i = 0; i < subVariants.length; i++) {
-        const choice = subVariants[i]!
-
-        // If this is a 2-pin pattern starting position
-        if (choice >= Pattern1Pin.NUM_VARIANTS) {
-          // Check if there's room for 2 pins
-          if (i >= pinCount - 1) return true // Not enough pins remaining
-
-          // Check if next pin is already occupied
-          const nextChoice = subVariants[i + 1]!
-          if (nextChoice !== 0) return true // Next pin is occupied
-        }
-      }
-
-      return false
-    },
-  )
+  const generator = getSubVariantGenerator(pinCount, subVariantCounts)
 
   const patternChoices = generator.get(variant)
   if (patternChoices === null) {

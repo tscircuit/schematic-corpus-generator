@@ -38,7 +38,7 @@ export function convertCircuitJsonSchematicElementsToBoundingBoxes(
       // Add extra space on the right for vertical symbols to account for rendered labels
       const verticalExtension = hasVerticalSymbol ? 0.3 : 0
       if (hasHorizontalSymbol) {
-        halfHeight += 0.1
+        halfHeight += 0.15
       }
 
       boundingBoxes.push({
