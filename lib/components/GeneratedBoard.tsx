@@ -28,14 +28,14 @@ export const GeneratedBoard = ({
         schY={0}
         schRotation={0}
       />
-      {patternApplications.map((application, index) => (
+      {patternApplications.map((application) => (
         <Pattern1Pin
           key={`pattern-${application.targetPin}-${application.patternVariant}`}
           pinCount={pinCount}
           pins={[application.targetPin + 1]}
           variant={application.patternVariant}
           slideVariations={
-            allSlideVariations[index % allSlideVariations.length]!
+            allSlideVariations[application.targetPin]!
           }
         />
       ))}
