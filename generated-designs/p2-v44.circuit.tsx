@@ -12,20 +12,30 @@ export default () => (
       schY={0}
       schRotation={0}
     />
-    <resistor
-    name="R1"
-    resistance="1000"
+    <group>
+    <capacitor
+    name="C1_1"
+    capacitance="100nF"
     schX="1"
-    schY="1.1"
-    schRotation="90deg"
-    connections={{pin1: "U1.1", pin2: "net.VCC"}}
+    schY="-1.0999999999999999"
+    schRotation="-90deg"
+    connections={{pin1: "U1.1", pin2: "net.GND"}}
     />
+    <capacitor
+    name="C1_2"
+    capacitance="100nF"
+    schX="2"
+    schY="-1.0999999999999999"
+    schRotation="-90deg"
+    connections={{pin1: "U1.1", pin2: "net.GND"}}
+    />
+    </group>
     <group>
     <capacitor
     name="C2_1"
     capacitance="100nF"
     schX="1"
-    schY="-1.0999999999999999"
+    schY="0.10000000000000031"
     schRotation="-90deg"
     connections={{pin1: "U1.2", pin2: "net.GND"}}
     />
@@ -33,7 +43,7 @@ export default () => (
     name="C2_2"
     capacitance="100nF"
     schX="2"
-    schY="-1.0999999999999999"
+    schY="0.10000000000000031"
     schRotation="-90deg"
     connections={{pin1: "U1.2", pin2: "net.GND"}}
     />

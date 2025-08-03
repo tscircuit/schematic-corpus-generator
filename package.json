@@ -6,6 +6,7 @@
     "start": "cosmos",
     "format": "biome format --write .",
     "format:check": "biome format .",
+    "generate:designs:p2": "bun run scripts/codegen.ts --pin-count 2",
     "snapshot:update": "tsci snapshot --update --schematic-only"
   },
   "devDependencies": {

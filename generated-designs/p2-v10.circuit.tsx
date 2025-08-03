@@ -13,30 +13,30 @@ export default () => (
       schRotation={0}
     />
     <resistor
-      name="R1"
-      resistance="1000"
-      schX="1"
-      schY="1.1"
-      schRotation="90deg"
-      connections={{ pin1: "U1.1", pin2: "net.VCC" }}
+    name="R1"
+    resistance="1000"
+    schX="1"
+    schY="1.1"
+    schRotation="90deg"
+    connections={{pin1: "U1.1", pin2: "net.VCC"}}
     />
     <group>
-      <resistor
-        name="R2_1"
-        resistance="1000"
-        schX="1.8"
-        schY="0.9"
-        schRotation="-90deg"
-        connections={{ pin1: "net.VCC", pin2: "U1.2" }}
-      />
-      <resistor
-        name="R2_2"
-        resistance="1000"
-        schX="1.8"
-        schY="-1.1"
-        schRotation="-90deg"
-        connections={{ pin1: "U1.2", pin2: "net.GND" }}
-      />
+    <resistor
+    name="R2_1"
+    resistance="1000"
+    schX="1.8"
+    schY="0.9"
+    schRotation="-90deg"
+    connections={{pin1: "net.VCC", pin2: "U1.2"}}
+    />
+    <resistor
+    name="R2_2"
+    resistance="1000"
+    schX="1.8"
+    schY="-1.1"
+    schRotation="-90deg"
+    connections={{pin1: "U1.2", pin2: "net.GND"}}
+    />
     </group>
   </board>
 )
