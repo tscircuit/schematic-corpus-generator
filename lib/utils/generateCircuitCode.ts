@@ -11,8 +11,7 @@ export function generateCircuitCode(
 
   const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 
-  let code = `<RootCircuit>
-  <board routingDisabled>
+  let code = `<board routingDisabled>
     <chip
       name="U1"
       schPinArrangement={{
@@ -69,8 +68,7 @@ export function generateCircuitCode(
   }
 
   code += `
-  </board>
-</RootCircuit>`
+  </board>`
 
   return code
 }
