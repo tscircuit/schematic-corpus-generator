@@ -2,7 +2,7 @@ import { Pattern1Pin } from "../lib/small-patterns/patterns-1pin/Pattern1Pin"
 import { RootCircuit } from "tscircuit"
 import { SchematicViewer } from "@tscircuit/schematic-viewer"
 import { Toolbar } from "./components/Toolbar"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 
@@ -84,11 +84,18 @@ export default () => {
     localStorage.setItem("lastVariant", String(variant))
   }, [variant])
 
-  const circuit = new RootCircuit()
+  const [circuitJson, error] = useMemo(() => {
+    try {
+      const circuit = new RootCircuit()
 
-  circuit.add(<GeneratedBoard variant={variant} pinCount={pinCount} />)
+      circuit.add(<GeneratedBoard variant={variant} pinCount={pinCount} />)
 
-  const circuitJson = circuit.getCircuitJson()
+      return [circuit.getCircuitJson(), null]
+    } catch (e) {
+      console.error(e)
+      return [null, e]
+    }
+  }, [variant, pinCount])
 
   return (
     <div>
@@ -98,13 +105,16 @@ export default () => {
         onChangeVariant={setVariant}
         onChangePinCount={setPinCount}
       />
-      <SchematicViewer
-        key={`${pinCount}-${variant}`}
-        circuitJson={circuitJson}
-        containerStyle={{
-          height: 500,
-        }}
-      />
+      {error && <div style={{ color: "red" }}>{error.toString()}</div>}
+      {circuitJson && (
+        <SchematicViewer
+          key={`${pinCount}-${variant}`}
+          circuitJson={circuitJson}
+          containerStyle={{
+            height: 500,
+          }}
+        />
+      )}
     </div>
   )
 }

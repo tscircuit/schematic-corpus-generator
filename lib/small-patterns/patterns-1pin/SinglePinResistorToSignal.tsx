@@ -1,11 +1,9 @@
 import { getPinPosition } from "../utils/getPinPosition"
+import type { SmallPatternProps } from "../types"
 
-export const SinglePinResistorToSignal = (props: {
-  pins: [number]
-  pinCount: number
-}) => {
+export const SinglePinResistorToSignal = (props: SmallPatternProps) => {
   const { pins, pinCount } = props
-  const [pin] = pins
+  const pin = pins[0]!
   const pinPosition = getPinPosition(pin, pinCount)
 
   return (
