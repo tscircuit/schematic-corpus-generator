@@ -2,6 +2,7 @@ import { RootCircuit } from "tscircuit"
 import { SchematicViewer } from "@tscircuit/schematic-viewer"
 import { Toolbar } from "../lib/components/Toolbar"
 import { GeneratedBoard } from "../lib/components/GeneratedBoard"
+import { CodeDisplay } from "../lib/components/CodeDisplay"
 import { useEffect, useMemo, useState } from "react"
 import { useSlideVariationControl } from "../lib/hooks/useSlideVariationControl"
 import { generatePatternApplications } from "../lib/utils/variantGenerator"
@@ -210,6 +211,11 @@ export default () => {
           >
             Download Circuit JSON
           </button>
+          <CodeDisplay
+            variant={variant}
+            pinCount={pinCount}
+            allSlideVariations={allSlideVariations}
+          />
         </div>
       )}
     </div>

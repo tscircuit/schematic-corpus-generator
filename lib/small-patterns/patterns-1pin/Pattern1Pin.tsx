@@ -44,7 +44,7 @@ export const Pattern1Pin = (props: {
 
 Pattern1Pin.NUM_VARIANTS = PATTERNS.length
 Pattern1Pin.PATTERNS = PATTERNS
-Pattern1Pin.getCode = (props: SmallPatternProps) => {
+Pattern1Pin.getCode = (props: SmallPatternProps & { variant: number }) => {
   const { pins, pinCount, slideVariations, variant } = props
   const Pattern = PATTERNS[variant]
 
@@ -52,5 +52,5 @@ Pattern1Pin.getCode = (props: SmallPatternProps) => {
     throw new Error(`Invalid variant: ${variant}`)
   }
 
-  return Pattern.getCode(props)
+  return Pattern.getCode({ pins, pinCount, slideVariations })
 }

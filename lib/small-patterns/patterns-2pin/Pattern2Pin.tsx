@@ -2,8 +2,10 @@ import { TwoPinCapacitor } from "./TwoPinCapacitor"
 import type { SmallPatternProps, SmallPatternComponent } from "../types"
 import { TwoPinCapacitorAndResistor } from "./TwoPinCapacitorAndResistor"
 
+import { NullPattern } from "../NullPattern"
+
 const PATTERNS: SmallPatternComponent[] = [
-  (props: SmallPatternProps) => null,
+  NullPattern,
   TwoPinCapacitor,
   TwoPinCapacitorAndResistor,
 ]
@@ -33,3 +35,13 @@ export const Pattern2Pin = (props: {
 
 Pattern2Pin.NUM_VARIANTS = PATTERNS.length
 Pattern2Pin.PATTERNS = PATTERNS
+Pattern2Pin.getCode = (props: SmallPatternProps & { variant: number }) => {
+  const { pins, pinCount, slideVariations, variant } = props
+  const Pattern = PATTERNS[variant]
+
+  if (!Pattern) {
+    throw new Error(`Invalid variant: ${variant}`)
+  }
+
+  return Pattern.getCode({ pins, pinCount, slideVariations })
+}
