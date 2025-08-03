@@ -1,5 +1,7 @@
 // Slide variation exploration utilities
 import { Pattern1Pin } from "../small-patterns/patterns-1pin/Pattern1Pin"
+import { Pattern2Pin } from "../small-patterns/patterns-2pin/Pattern2Pin"
+import type { PatternApplication } from "./variantGenerator"
 
 /**
  * Generates dimension 1 values: [0, 1, -1, 2, -2, 3, -3, ...] up to 8
@@ -16,7 +18,7 @@ function getDim1Values(): number[] {
  * Get the used slide variation dimensions for each pin based on pattern applications
  */
 export function getUsedDimensionsPerPin(
-  patternApplications: Array<{ patternVariant: number; targetPin: number }>,
+  patternApplications: PatternApplication[],
   pinCount: number,
 ): number[][] {
   // Initialize with empty arrays for each pin
@@ -33,15 +35,28 @@ export function getUsedDimensionsPerPin(
     4: [0, 1], // SinglePinResistorToSignal
   }
 
-  for (const application of patternApplications) {
-    const patternDimensions =
-      pattern1PinUsedDimensions[application.patternVariant]
+  const pattern2PinUsedDimensions: Record<number, number[]> = {
+    0: [], // null pattern
+    1: [0, 1], // TwoPinResistorBridge
+    2: [0, 1], // TwoPinCapacitor
+    3: [0, 1], // TwoPinVoltageDivider
+  }
 
-    if (patternDimensions) {
+  for (const application of patternApplications) {
+    let patternDimensions: number[] = []
+
+    if (application.patternType === "Pattern1Pin") {
+      patternDimensions = pattern1PinUsedDimensions[
+        application.patternVariant
+      ] || [0, 1, 2]
       dimensionsPerPin[application.targetPin] = patternDimensions
-    } else {
-      // Fallback: if not specified, assume all dimensions are used
-      dimensionsPerPin[application.targetPin] = [0, 1, 2]
+    } else if (application.patternType === "Pattern2Pin") {
+      patternDimensions = pattern2PinUsedDimensions[
+        application.patternVariant
+      ] || [0, 1, 2]
+      // For 2-pin patterns, only the first pin gets slide variations
+      dimensionsPerPin[application.targetPin] = patternDimensions
+      // The second pin doesn't get its own slide variations since the pattern controls both pins
     }
   }
 
@@ -53,7 +68,7 @@ export function getUsedDimensionsPerPin(
  * @deprecated Use getUsedDimensionsPerPin for more precise per-pin optimization
  */
 export function getUsedDimensions(
-  patternApplications: Array<{ patternVariant: number; targetPin: number }>,
+  patternApplications: PatternApplication[],
 ): number[] {
   const usedDimensions = new Set<number>()
 

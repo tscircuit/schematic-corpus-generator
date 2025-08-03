@@ -22,7 +22,11 @@ export interface SolverOptions {
 
 export class SlideVariationSolver {
   private options: SolverOptions
-  private variationIterator: Generator<[number, number, number][], void, unknown> | null = null
+  private variationIterator: Generator<
+    [number, number, number][],
+    void,
+    unknown
+  > | null = null
   private isRunning = false
   private shouldStop = false
   private currentVariationIndex = 0
@@ -37,16 +41,18 @@ export class SlideVariationSolver {
   /**
    * Renders a circuit with the given slide variations and returns the circuit JSON
    */
-  private renderCircuit(slideVariations: [number, number, number][]): CircuitJson | null {
+  private renderCircuit(
+    slideVariations: [number, number, number][],
+  ): CircuitJson | null {
     try {
       const circuit = new RootCircuit()
-      
+
       circuit.add(
         <GeneratedBoard
           variant={this.options.variant}
           pinCount={this.options.pinCount}
           allSlideVariations={slideVariations}
-        />
+        />,
       )
 
       return circuit.getCircuitJson()
@@ -91,11 +97,14 @@ export class SlideVariationSolver {
     // Initialize the iterator
     this.variationIterator = generateSlideVariationsIterator(
       this.options.pinCount,
-      this.options.usedDimensionsPerPin
+      this.options.usedDimensionsPerPin,
     )
 
     try {
-      while (!this.shouldStop && this.currentVariationIndex < (this.options.maxIterations || 10000)) {
+      while (
+        !this.shouldStop &&
+        this.currentVariationIndex < (this.options.maxIterations || 10000)
+      ) {
         const result = this.variationIterator.next()
 
         if (result.done) {
@@ -104,10 +113,10 @@ export class SlideVariationSolver {
         }
 
         const slideVariations = result.value
-        
+
         // Render the circuit with current slide variations
         const circuitJson = this.renderCircuit(slideVariations)
-        
+
         if (!circuitJson) {
           // Skip if circuit rendering failed
           this.currentVariationIndex++
@@ -130,7 +139,7 @@ export class SlideVariationSolver {
         // If no collisions, we found our solution!
         if (!collisionInfo.hasCollisions) {
           this.isRunning = false
-          
+
           // Final progress notification
           if (this.options.onProgress) {
             this.options.onProgress({
@@ -149,15 +158,14 @@ export class SlideVariationSolver {
         }
 
         this.currentVariationIndex++
-        
+
         // Yield control to allow other operations (non-blocking)
-        await new Promise(resolve => setTimeout(resolve, 0))
+        await new Promise((resolve) => setTimeout(resolve, 0))
       }
 
       // No solution found within max iterations
       this.isRunning = false
       return null
-
     } catch (error) {
       this.isRunning = false
       throw error

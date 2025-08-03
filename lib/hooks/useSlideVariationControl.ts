@@ -1,13 +1,16 @@
 import { useState, useCallback, useEffect } from "react"
 import type { CircuitJson } from "circuit-json"
 import { detectCollisions, type CollisionInfo } from "../utils/detectCollisions"
-import { SlideVariationSolver, type SolverProgress } from "../utils/SlideVariationSolver"
+import {
+  SlideVariationSolver,
+  type SolverProgress,
+} from "../utils/SlideVariationSolver"
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 
 export const useSlideVariationControl = (
   pinCount: number,
-  usedDimensionsPerPin?: number[][]
+  usedDimensionsPerPin?: number[][],
 ) => {
   const [allSlideVariations, setAllSlideVariations] = useState(
     range(pinCount).map(() => [0, 0, 0] as [number, number, number]),
@@ -41,7 +44,6 @@ export const useSlideVariationControl = (
     [],
   )
 
-
   const stopAnimation = useCallback(() => {
     setIsAnimating(false)
   }, [])
@@ -55,7 +57,6 @@ export const useSlideVariationControl = (
       range(pinCount).map(() => [0, 0, 0] as [number, number, number]),
     )
   }, [pinCount])
-
 
   // Enhanced animation with collision checking using SlideVariationSolver
   const startSmartAnimation = useCallback(
@@ -74,7 +75,7 @@ export const useSlideVariationControl = (
           setAllSlideVariations(progress.currentVariation)
           setCurrentVariationIndex(progress.variationIndex)
           setCollisionInfo(progress.collisionInfo)
-          
+
           if (progress.isComplete) {
             setIsAnimating(false)
             setHasMoreVariations(false)
@@ -85,7 +86,7 @@ export const useSlideVariationControl = (
 
       try {
         const solution = await solver.solve()
-        
+
         if (solution) {
           setAllSlideVariations(solution.slideVariations)
           setCollisionInfo(solution.collisionInfo)
@@ -100,7 +101,6 @@ export const useSlideVariationControl = (
     },
     [isAnimating, pinCount, usedDimensionsPerPin],
   )
-
 
   return {
     allSlideVariations,

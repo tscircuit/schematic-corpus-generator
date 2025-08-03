@@ -1,4 +1,5 @@
 import { Pattern1Pin } from "../small-patterns/patterns-1pin/Pattern1Pin"
+import { Pattern2Pin } from "../small-patterns/patterns-2pin/Pattern2Pin"
 import { generatePatternApplications } from "../utils/variantGenerator"
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
@@ -28,17 +29,30 @@ export const GeneratedBoard = ({
         schY={0}
         schRotation={0}
       />
-      {patternApplications.map((application) => (
-        <Pattern1Pin
-          key={`pattern-${application.targetPin}-${application.patternVariant}`}
-          pinCount={pinCount}
-          pins={[application.targetPin + 1]}
-          variant={application.patternVariant}
-          slideVariations={
-            allSlideVariations[application.targetPin]!
-          }
-        />
-      ))}
+      {patternApplications.map((application) => {
+        if (application.patternType === "Pattern1Pin") {
+          return (
+            <Pattern1Pin
+              key={`pattern1-${application.targetPin}-${application.patternVariant}`}
+              pinCount={pinCount}
+              pins={[application.pins[0]!]}
+              variant={application.patternVariant}
+              slideVariations={allSlideVariations[application.targetPin]!}
+            />
+          )
+        } else if (application.patternType === "Pattern2Pin") {
+          return (
+            <Pattern2Pin
+              key={`pattern2-${application.targetPin}-${application.patternVariant}`}
+              pinCount={pinCount}
+              pins={[application.pins[0]!, application.pins[1]!]}
+              variant={application.patternVariant}
+              slideVariations={allSlideVariations[application.targetPin]!}
+            />
+          )
+        }
+        return null
+      })}
     </board>
   )
 }
