@@ -5,7 +5,8 @@
   "scripts": {
     "start": "cosmos",
     "format": "biome format --write .",
-    "format:check": "biome format ."
+    "format:check": "biome format .",
+    "snapshot:update": "tsci snapshot --update --schematic-only"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.3",
