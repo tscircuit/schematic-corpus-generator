@@ -81,7 +81,7 @@ export const useSlideVariationControl = (
             setHasMoreVariations(false)
           }
         },
-        maxIterations: 10000,
+        maxIterations: 100000,
       })
 
       try {
