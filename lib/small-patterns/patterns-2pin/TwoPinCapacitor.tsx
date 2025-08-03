@@ -17,9 +17,9 @@ export const TwoPinCapacitor: SmallPatternComponent = (
     <capacitor
       name={`C${pin1}_${pin2}`}
       capacitance="100nF"
-      schX={pin1Position.x + 0.4 + slideVariations[0] * 0.2}
+      schX={pin1Position.x + 0.8 + slideVariations[0] * 0.2}
       schY={midY + slideVariations[1] * 0.1}
-      schRotation="90deg"
+      schRotation="-90deg"
       connections={{
         pin1: `U1.${pin1}`,
         pin2: `U1.${pin2}`,
