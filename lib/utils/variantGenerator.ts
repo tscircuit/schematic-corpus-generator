@@ -101,31 +101,31 @@ export const generatePatternApplications = (
 export const getTotalVariants = (pinCount: number): number => {
   // SP_1 = number of 1-pin patterns (excluding null pattern)
   const SP_1 = Pattern1Pin.NUM_VARIANTS - 1
-  // SP_2 = number of 2-pin patterns (excluding null pattern)  
+  // SP_2 = number of 2-pin patterns (excluding null pattern)
   const SP_2 = Pattern2Pin.NUM_VARIANTS - 1
-  
+
   // Memoization cache
   const memo: number[] = new Array(pinCount + 1)
-  
+
   const calculateF = (n: number): number => {
     if (n === 0) return 1
     if (memo[n] !== undefined) return memo[n]
-    
+
     let result = 0
-    
+
     // Add contribution from 1-pin patterns: SP_1 * F(n-1)
     if (n >= 1) {
       result += SP_1 * calculateF(n - 1)
     }
-    
+
     // Add contribution from 2-pin patterns: SP_2 * F(n-2)
     if (n >= 2) {
       result += SP_2 * calculateF(n - 2)
     }
-    
+
     memo[n] = result
     return result
   }
-  
+
   return calculateF(pinCount)
 }
