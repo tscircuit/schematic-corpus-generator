@@ -6,6 +6,12 @@
  *   //   [1,0], [1, 1], [1, 2], [1, 3],
  *   //   [2,0], [2, 1], [2, 2], [2, 3] ]
  */
+// Memoization cache for sub-variant combinations keyed by the
+// `subVariantCounts` array stringified with commas.  This avoids
+// recomputing Cartesian products when the same shape is requested
+// repeatedly during a single runtime.
+const combinationsCache = new Map<string, number[][]>()
+
 export const getSubVariants = (
   variant: number,
   subVariantCounts: number[],
@@ -30,7 +36,14 @@ export const getSubVariants = (
     return results
   }
 
-  const allCombinations = generateCombinations(subVariantCounts)
+  const key = subVariantCounts.join(",")
+  const allCombinations =
+    combinationsCache.get(key) ??
+    (() => {
+      const combos = generateCombinations(subVariantCounts)
+      combinationsCache.set(key, combos)
+      return combos
+    })()
 
   for (const subVariants of allCombinations) {
     if (shouldSkip?.(subVariants)) continue
