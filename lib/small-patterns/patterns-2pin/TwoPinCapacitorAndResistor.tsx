@@ -1,7 +1,7 @@
 import { getPinPosition } from "../utils/getPinPosition"
 import type { SmallPatternProps, SmallPatternComponent } from "../types"
 
-export const TwoPinCapacitor: SmallPatternComponent = (
+export const TwoPinCapacitorAndResistor: SmallPatternComponent = (
   props: SmallPatternProps,
 ) => {
   const { pins, pinCount, slideVariations } = props
@@ -41,4 +41,4 @@ export const TwoPinCapacitor: SmallPatternComponent = (
   )
 }
 
-TwoPinCapacitor.usedSlideVariationDimensions = [0, 1]
+TwoPinCapacitorAndResistor.usedSlideVariationDimensions = [0, 1]

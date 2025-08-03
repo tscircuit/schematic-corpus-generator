@@ -1,9 +1,11 @@
 import { TwoPinCapacitor } from "./TwoPinCapacitor"
 import type { SmallPatternProps, SmallPatternComponent } from "../types"
+import { TwoPinCapacitorAndResistor } from "./TwoPinCapacitorAndResistor"
 
 const PATTERNS: SmallPatternComponent[] = [
   (props: SmallPatternProps) => null,
   TwoPinCapacitor,
+  TwoPinCapacitorAndResistor,
 ]
 
 export const Pattern2Pin = (props: {
