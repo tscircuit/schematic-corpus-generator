@@ -15,8 +15,14 @@ export default () => {
   })
 
   // Calculate which slideVariation dimensions are used by each pin's pattern
-  const patternApplications = useMemo(() => generatePatternApplications(variant, pinCount), [variant, pinCount])
-  const usedDimensionsPerPin = useMemo(() => getUsedDimensionsPerPin(patternApplications, pinCount), [patternApplications, pinCount])
+  const patternApplications = useMemo(
+    () => generatePatternApplications(variant, pinCount),
+    [variant, pinCount],
+  )
+  const usedDimensionsPerPin = useMemo(
+    () => getUsedDimensionsPerPin(patternApplications, pinCount),
+    [patternApplications, pinCount],
+  )
 
   const {
     allSlideVariations,
@@ -75,7 +81,8 @@ export default () => {
       >
         <h3>Slide Variation Animation</h3>
         <div style={{ marginBottom: "10px", fontSize: "14px", color: "#666" }}>
-          Exploring slide variation combinations for {pinCount} pins with per-pin dimension optimization:
+          Exploring slide variation combinations for {pinCount} pins with
+          per-pin dimension optimization:
           <div style={{ fontSize: "12px", marginTop: "5px" }}>
             {usedDimensionsPerPin.map((dims, i) => (
               <div key={i}>
@@ -174,6 +181,7 @@ export default () => {
           containerStyle={{
             height: 500,
           }}
+          debugGrid
         />
       )}
     </div>

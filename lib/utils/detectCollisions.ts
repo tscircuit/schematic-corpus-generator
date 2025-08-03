@@ -46,7 +46,9 @@ export function detectCollisions(
 
     // Remove self from collision results
     const otherCollisions = collisions.filter(
-      (collision) => collision.elementId !== boundingBox.elementId,
+      (collision: BoundingBox) =>
+        collision.elementId !== boundingBox.elementId &&
+        collision.schematicComponentId !== boundingBox.schematicComponentId,
     )
 
     // Add unique collision pairs (avoid duplicates)

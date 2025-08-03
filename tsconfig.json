@@ -21,7 +21,7 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
 
-    "types": ["tscircuit"],
+    "types": ["tscircuit", "bun-types"],
 
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
