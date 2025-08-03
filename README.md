@@ -65,3 +65,8 @@ We would have **3,163 schematics.**:
 
 In general, it takes about `1MB` to store 1,000 schematics in memory when they
 are compressed, so storing 3,163 schematics would take about `3.163MB`.
+
+## Reference Schematics
+
+- https://cdn.sparkfun.com/assets/7/7/2/1/9/SparkFun_STM32_Thing_Plus.pdf
+- https://cdn.sparkfun.com/assets/5/a/3/6/0/MicroMod-Teensy_V1_3.pdf
