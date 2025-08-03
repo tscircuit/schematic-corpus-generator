@@ -1,7 +1,7 @@
 import { getPinPosition } from "../utils/getPinPosition"
-import type { SmallPatternProps } from "../types"
+import type { SmallPatternProps, SmallPatternComponent } from "../types"
 
-export const SinglePinResistorToSignal = (props: SmallPatternProps) => {
+export const SinglePinResistorToSignal: SmallPatternComponent = (props: SmallPatternProps) => {
   const { pins, pinCount, slideVariations } = props
   const pin = pins[0]!
   const pinPosition = getPinPosition(pin, pinCount)
@@ -20,3 +20,5 @@ export const SinglePinResistorToSignal = (props: SmallPatternProps) => {
     />
   )
 }
+
+SinglePinResistorToSignal.usedSlideVariationDimensions = [0, 1]

@@ -4,6 +4,8 @@ import { Toolbar } from "../lib/components/Toolbar"
 import { GeneratedBoard } from "../lib/components/GeneratedBoard"
 import { useEffect, useMemo, useState } from "react"
 import { useSlideVariationControl } from "../lib/hooks/useSlideVariationControl"
+import { generatePatternApplications } from "../lib/utils/variantGenerator"
+import { getUsedDimensionsPerPin } from "../lib/utils/slide-variation-explorer"
 
 export default () => {
   const [pinCount, setPinCount] = useState(3)
@@ -11,6 +13,10 @@ export default () => {
     const stored = localStorage.getItem("lastVariant")
     return stored !== null ? Number(stored) : 1
   })
+
+  // Calculate which slideVariation dimensions are used by each pin's pattern
+  const patternApplications = useMemo(() => generatePatternApplications(variant, pinCount), [variant, pinCount])
+  const usedDimensionsPerPin = useMemo(() => getUsedDimensionsPerPin(patternApplications, pinCount), [patternApplications, pinCount])
 
   const {
     allSlideVariations,
@@ -23,7 +29,7 @@ export default () => {
     startAnimation,
     startAnimationWithCollisionDetection,
     stopAnimation,
-  } = useSlideVariationControl(pinCount)
+  } = useSlideVariationControl(pinCount, usedDimensionsPerPin)
 
   useEffect(() => {
     localStorage.setItem("lastVariant", String(variant))
@@ -70,8 +76,14 @@ export default () => {
       >
         <h3>Slide Variation Animation</h3>
         <div style={{ marginBottom: "10px", fontSize: "14px", color: "#666" }}>
-          Exploring all possible slide variation combinations for all {pinCount}{" "}
-          pins, ordered by lowest total distance
+          Exploring slide variation combinations for {pinCount} pins with per-pin dimension optimization:
+          <div style={{ fontSize: "12px", marginTop: "5px" }}>
+            {usedDimensionsPerPin.map((dims, i) => (
+              <div key={i}>
+                Pin {i + 1}: dimensions [{dims.join(", ") || "none"}]
+              </div>
+            ))}
+          </div>
         </div>
 
         <div style={{ marginBottom: "10px" }}>

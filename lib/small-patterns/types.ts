@@ -22,3 +22,21 @@ export interface SmallPatternProps {
    */
   slideVariations: [number, number, number]
 }
+
+export interface SmallPatternComponent {
+  (props: SmallPatternProps): React.JSX.Element | null
+  /**
+   * Declares which slideVariation dimensions this pattern actually uses.
+   * Only the specified dimensions will be varied during animation, significantly
+   * reducing the number of animation frames.
+   * 
+   * @example
+   * // Pattern only uses horizontal offset (dimension 0)
+   * usedSlideVariationDimensions: [0]
+   * 
+   * @example 
+   * // Pattern uses all three dimensions
+   * usedSlideVariationDimensions: [0, 1, 2]
+   */
+  usedSlideVariationDimensions?: number[]
+}

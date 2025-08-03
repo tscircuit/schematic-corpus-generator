@@ -2,9 +2,9 @@ import { SinglePinResistorToPower } from "./SinglePinResistorToPower"
 import { SinglePinResistorToGround } from "./SinglePinResistorToGround"
 import { SinglePinToVoltageDivider } from "./SinglePinToVoltageDivider"
 import { SinglePinResistorToSignal } from "./SinglePinResistorToSignal"
-import type { SmallPatternProps } from "../types"
+import type { SmallPatternProps, SmallPatternComponent } from "../types"
 
-const PATTERNS = [
+const PATTERNS: SmallPatternComponent[] = [
   (props: SmallPatternProps) => null,
   SinglePinResistorToPower,
   SinglePinResistorToGround,
@@ -36,3 +36,4 @@ export const Pattern1Pin = (props: {
 }
 
 Pattern1Pin.NUM_VARIANTS = PATTERNS.length
+Pattern1Pin.PATTERNS = PATTERNS

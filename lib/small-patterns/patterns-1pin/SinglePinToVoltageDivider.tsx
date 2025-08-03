@@ -1,7 +1,7 @@
 import { getPinPosition } from "../utils/getPinPosition"
-import type { SmallPatternProps } from "../types"
+import type { SmallPatternProps, SmallPatternComponent } from "../types"
 
-export const SinglePinToVoltageDivider = (props: SmallPatternProps) => {
+export const SinglePinToVoltageDivider: SmallPatternComponent = (props: SmallPatternProps) => {
   const { pins, pinCount, slideVariations } = props
   const pin = pins[0]!
   const pinPosition = getPinPosition(pin, pinCount)
@@ -38,3 +38,5 @@ export const SinglePinToVoltageDivider = (props: SmallPatternProps) => {
     </group>
   )
 }
+
+SinglePinToVoltageDivider.usedSlideVariationDimensions = [0, 1, 2]

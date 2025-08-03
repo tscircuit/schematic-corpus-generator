@@ -5,7 +5,10 @@ import { detectCollisions, type CollisionInfo } from "../utils/detectCollisions"
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 
-export const useSlideVariationControl = (pinCount: number) => {
+export const useSlideVariationControl = (
+  pinCount: number,
+  usedDimensionsPerPin?: number[][]
+) => {
   const [allSlideVariations, setAllSlideVariations] = useState(
     range(pinCount).map(() => [0, 0, 0] as [number, number, number]),
   )
@@ -69,14 +72,14 @@ export const useSlideVariationControl = (pinCount: number) => {
     if (isAnimating) return
 
     // Initialize iterator
-    variationIterator.current = generateSlideVariationsIterator(pinCount)
+    variationIterator.current = generateSlideVariationsIterator(pinCount, usedDimensionsPerPin)
     setIsAnimating(true)
     setCurrentVariationIndex(0)
     setHasMoreVariations(true)
 
     // Start the animation loop
     animateNextVariation()
-  }, [isAnimating, pinCount, animateNextVariation])
+  }, [isAnimating, pinCount, usedDimensionsPerPin, animateNextVariation])
 
   const stopAnimation = useCallback(() => {
     setIsAnimating(false)
@@ -111,7 +114,7 @@ export const useSlideVariationControl = (pinCount: number) => {
       if (isAnimating) return
 
       // Initialize iterator
-      variationIterator.current = generateSlideVariationsIterator(pinCount)
+      variationIterator.current = generateSlideVariationsIterator(pinCount, usedDimensionsPerPin)
       setIsAnimating(true)
       setCurrentVariationIndex(0)
       setHasMoreVariations(true)
@@ -149,7 +152,7 @@ export const useSlideVariationControl = (pinCount: number) => {
 
       animateWithCheck()
     },
-    [isAnimating, pinCount, checkCollisions],
+    [isAnimating, pinCount, usedDimensionsPerPin, checkCollisions],
   )
 
   return {
