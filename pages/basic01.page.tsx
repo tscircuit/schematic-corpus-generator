@@ -21,7 +21,7 @@ export default () => {
   // Animation state
   const [isAnimating, setIsAnimating] = useState(false)
   const [currentVariationIndex, setCurrentVariationIndex] = useState(0)
-  const animationInterval = useRef<NodeJS.Timeout | null>(null)
+  const animationTimeout = useRef<NodeJS.Timeout | null>(null)
   const variationIterator = useRef<Generator<[number, number, number][], void, unknown> | null>(null)
   const [hasMoreVariations, setHasMoreVariations] = useState(true)
 
@@ -38,6 +38,26 @@ export default () => {
   }, [])
 
   // Animation control functions
+  const animateNextVariation = useCallback(() => {
+    if (!variationIterator.current) return
+    
+    const result = variationIterator.current.next()
+    
+    if (result.done) {
+      // No more variations available
+      setIsAnimating(false)
+      setHasMoreVariations(false)
+      return
+    }
+    
+    // Update with the next variation and let React render
+    setAllSlideVariations(result.value)
+    setCurrentVariationIndex(prev => prev + 1)
+    
+    // Queue next iteration after render completes
+    animationTimeout.current = setTimeout(animateNextVariation, 0)
+  }, [])
+
   const startAnimation = useCallback(() => {
     if (isAnimating) return
     
@@ -47,29 +67,15 @@ export default () => {
     setCurrentVariationIndex(0)
     setHasMoreVariations(true)
     
-    animationInterval.current = setInterval(() => {
-      if (variationIterator.current) {
-        const result = variationIterator.current.next()
-        
-        if (result.done) {
-          // No more variations available
-          setIsAnimating(false)
-          setHasMoreVariations(false)
-          return
-        }
-        
-        // Update with the next variation
-        setAllSlideVariations(result.value)
-        setCurrentVariationIndex(prev => prev + 1)
-      }
-    }, 66) // 66ms as requested
-  }, [isAnimating, pinCount])
+    // Start the animation loop
+    animateNextVariation()
+  }, [isAnimating, pinCount, animateNextVariation])
 
   const stopAnimation = useCallback(() => {
     setIsAnimating(false)
-    if (animationInterval.current) {
-      clearInterval(animationInterval.current)
-      animationInterval.current = null
+    if (animationTimeout.current) {
+      clearTimeout(animationTimeout.current)
+      animationTimeout.current = null
     }
   }, [])
 
@@ -81,11 +87,11 @@ export default () => {
     setAllSlideVariations(range(pinCount).map(() => [0, 0, 0] as [number, number, number]))
   }, [pinCount])
 
-  // Cleanup interval on unmount
+  // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
-      if (animationInterval.current) {
-        clearInterval(animationInterval.current)
+      if (animationTimeout.current) {
+        clearTimeout(animationTimeout.current)
       }
     }
   }, [])
