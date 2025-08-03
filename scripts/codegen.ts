@@ -10,6 +10,7 @@ interface CodegenOptions {
   outputDir: string
   maxComponents: number
   verbose: boolean
+  regenerate: boolean
 }
 
 function parseCliArgs(): CodegenOptions {
@@ -36,6 +37,11 @@ function parseCliArgs(): CodegenOptions {
         short: "v",
         default: false,
       },
+      regenerate: {
+        type: "boolean",
+        short: "r",
+        default: false,
+      },
       help: {
         type: "boolean",
         short: "h",
@@ -53,6 +59,7 @@ Options:
   -o, --output-dir <path>      Output directory for generated designs (default: ./generated-designs)
   -m, --max-components <number> Maximum components per design (default: 10)
   -v, --verbose               Enable verbose logging
+  -r, --regenerate            Overwrite existing files (default: false)
   -h, --help                  Show this help message
 
 Example:
@@ -79,6 +86,7 @@ Example:
     outputDir: values["output-dir"] || "./generated-designs",
     maxComponents,
     verbose: values.verbose || false,
+    regenerate: values.regenerate || false,
   }
 }
 
@@ -89,6 +97,7 @@ async function main() {
   console.log(`📁 Output directory: ${options.outputDir}`)
   console.log(`🔧 Max components per design: ${options.maxComponents}`)
   console.log(`📝 Verbose logging: ${options.verbose ? "enabled" : "disabled"}`)
+  console.log(`🔄 Regenerate existing files: ${options.regenerate ? "enabled" : "disabled"}`)
   console.log("")
 
   try {
@@ -101,6 +110,7 @@ async function main() {
       maxComponents: options.maxComponents,
       verbose: options.verbose,
       outputDir: options.outputDir,
+      regenerate: options.regenerate,
     })
 
     console.log("")

@@ -1,5 +1,6 @@
 import { join } from "path"
-import { writeFile } from "fs/promises"
+import { writeFile, access } from "fs/promises"
+import { constants } from "fs"
 import {
   getTotalVariants,
   generatePatternApplications,
@@ -87,6 +88,7 @@ export interface GenerationOptions {
   maxComponents: number
   verbose: boolean
   outputDir: string
+  regenerate: boolean
 }
 
 export interface ValidDesign {
@@ -100,7 +102,7 @@ export interface ValidDesign {
 export async function generateAllValidDesigns(
   options: GenerationOptions,
 ): Promise<ValidDesign[]> {
-  const { pinCount, maxComponents, verbose, outputDir } = options
+  const { pinCount, maxComponents, verbose, outputDir, regenerate } = options
 
   console.log(`🔍 Calculating total variants for pin count ${pinCount}...`)
   const totalVariants = getTotalVariants(pinCount)
@@ -110,6 +112,7 @@ export async function generateAllValidDesigns(
   let processedCount = 0
   let filteredCount = 0
   let solvedCount = 0
+  let skippedCount = 0
 
   const startTime = Date.now()
 
@@ -218,6 +221,31 @@ export async function generateAllValidDesigns(
       const filename = `p${pinCount}-v${variant}.circuit.tsx`
       const filepath = join(outputDir, filename)
 
+      // Check if file exists and skip if regenerate is false
+      if (!regenerate) {
+        try {
+          await access(filepath, constants.F_OK)
+          // File exists, skip it
+          skippedCount++
+          if (verbose) {
+            console.log(`  ⏭️  Skipping existing file: ${filename}`)
+          }
+          continue
+        } catch {
+          // File doesn't exist, continue with generation
+        }
+      } else {
+        // Regenerate is enabled, check if we're overwriting
+        try {
+          await access(filepath, constants.F_OK)
+          if (verbose) {
+            console.log(`  🔄 Overwriting existing file: ${filename}`)
+          }
+        } catch {
+          // File doesn't exist, will be created
+        }
+      }
+
       // Save the design
       await writeFile(filepath, circuitCode)
 
@@ -256,6 +284,11 @@ export async function generateAllValidDesigns(
   console.log(
     `  Successfully solved: ${solvedCount.toLocaleString()} (${((solvedCount / processedCount) * 100).toFixed(1)}%)`,
   )
+  if (skippedCount > 0) {
+    console.log(
+      `  Skipped existing files: ${skippedCount.toLocaleString()}`,
+    )
+  }
   console.log(`  Total time: ${elapsed.toFixed(1)}s`)
   console.log(
     `  Average time per variant: ${((elapsed / processedCount) * 1000).toFixed(1)}ms`,

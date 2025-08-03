@@ -7,6 +7,8 @@
     "format": "biome format --write .",
     "format:check": "biome format .",
     "generate:designs:p2": "bun run scripts/codegen.ts --pin-count 2 --verbose",
+    "generate:designs:p3": "bun run scripts/codegen.ts --pin-count 3 --verbose",
+    "generate:designs:p4": "bun run scripts/codegen.ts --pin-count 4 --verbose",
     "snapshot:update": "tsci snapshot --update --schematic-only"
   },
   "devDependencies": {
