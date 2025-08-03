@@ -13,6 +13,7 @@
     "@tscircuit/schematic-viewer": "^2.0.24",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.12",
+    "circuit-json": "^0.0.226",
     "circuit-to-svg": "^0.0.175",
     "ky": "^1.8.2",
     "react-cosmos": "^7.0.0",
