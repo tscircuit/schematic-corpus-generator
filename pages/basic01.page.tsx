@@ -8,7 +8,7 @@ import { generatePatternApplications } from "../lib/utils/variantGenerator"
 import { getUsedDimensionsPerPin } from "../lib/utils/slide-variation-explorer"
 
 export default () => {
-  const [pinCount, setPinCount] = useState(3)
+  const [pinCount, setPinCount] = useState(5)
   const [variant, setVariant] = useState(() => {
     const stored = localStorage.getItem("lastVariant")
     return stored !== null ? Number(stored) : 1

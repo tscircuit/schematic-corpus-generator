@@ -33,7 +33,7 @@ export class SlideVariationSolver {
 
   constructor(options: SolverOptions) {
     this.options = {
-      maxIterations: 10000,
+      maxIterations: 100e3,
       ...options,
     }
   }
@@ -103,7 +103,7 @@ export class SlideVariationSolver {
     try {
       while (
         !this.shouldStop &&
-        this.currentVariationIndex < (this.options.maxIterations || 10000)
+        this.currentVariationIndex < (this.options.maxIterations || 100e3)
       ) {
         const result = this.variationIterator.next()
 
