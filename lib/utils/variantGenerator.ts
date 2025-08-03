@@ -95,14 +95,37 @@ export const generatePatternApplications = (
 }
 
 /**
- * Calculates the total number of valid variants for a given pin count.
- * Each pin can have 1-pin patterns, 2-pin patterns, or no pattern.
+ * Calculates the total number of valid variants for a given pin count using
+ * the combinatorial formula from README: F(n) = SP_1 * F(n−1) + SP_2 * F(n−2) + SP_3 * F(n−3) + ..., F(0)=1
  */
 export const getTotalVariants = (pinCount: number): number => {
-  const maxPatternsPerPin = Pattern1Pin.NUM_VARIANTS + Pattern2Pin.NUM_VARIANTS
-  const totalCombinations = maxPatternsPerPin ** pinCount
-
-  // This is an approximation - the actual number is lower due to 2-pin pattern constraints
-  // but the getSubVariants function will handle filtering invalid combinations
-  return totalCombinations - 1 // Subtract 1 for the all-zeros case
+  // SP_1 = number of 1-pin patterns (excluding null pattern)
+  const SP_1 = Pattern1Pin.NUM_VARIANTS - 1
+  // SP_2 = number of 2-pin patterns (excluding null pattern)  
+  const SP_2 = Pattern2Pin.NUM_VARIANTS - 1
+  
+  // Memoization cache
+  const memo: number[] = new Array(pinCount + 1)
+  
+  const calculateF = (n: number): number => {
+    if (n === 0) return 1
+    if (memo[n] !== undefined) return memo[n]
+    
+    let result = 0
+    
+    // Add contribution from 1-pin patterns: SP_1 * F(n-1)
+    if (n >= 1) {
+      result += SP_1 * calculateF(n - 1)
+    }
+    
+    // Add contribution from 2-pin patterns: SP_2 * F(n-2)
+    if (n >= 2) {
+      result += SP_2 * calculateF(n - 2)
+    }
+    
+    memo[n] = result
+    return result
+  }
+  
+  return calculateF(pinCount)
 }
