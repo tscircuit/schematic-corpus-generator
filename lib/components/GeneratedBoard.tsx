@@ -34,7 +34,9 @@ export const GeneratedBoard = ({
           pinCount={pinCount}
           pins={[application.targetPin + 1]}
           variant={application.patternVariant}
-          slideVariations={allSlideVariations[index % allSlideVariations.length]!}
+          slideVariations={
+            allSlideVariations[index % allSlideVariations.length]!
+          }
         />
       ))}
     </board>

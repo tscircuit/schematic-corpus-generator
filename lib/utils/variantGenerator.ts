@@ -17,21 +17,21 @@ export const generatePatternApplications = (
 ): PatternApplication[] => {
   // Generate all combinations: each pin can have any pattern variant (including 0 = no pattern)
   const subVariantCounts = Array(pinCount).fill(Pattern1Pin.NUM_VARIANTS)
-  
+
   const patternSelections = getSubVariants(
     variant,
     subVariantCounts,
     (subVariants) => {
       // Skip the case where all pins have no pattern (all zeros)
-      return subVariants.every(v => v === 0)
+      return subVariants.every((v) => v === 0)
     },
   )
 
   const applications: PatternApplication[] = []
-  
+
   for (let pinIndex = 0; pinIndex < pinCount; pinIndex++) {
     const patternVariant = patternSelections[pinIndex]!
-    
+
     // Only add patterns that are not variant 0 (no pattern)
     if (patternVariant !== 0) {
       applications.push({

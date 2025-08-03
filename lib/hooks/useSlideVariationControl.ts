@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react"
 import { generateSlideVariationsIterator } from "../utils/slide-variation-explorer"
 import type { CircuitJson } from "circuit-json"
+import { detectCollisions, type CollisionInfo } from "../utils/detectCollisions"
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 
@@ -19,14 +20,29 @@ export const useSlideVariationControl = (pinCount: number) => {
     unknown
   > | null>(null)
   const [hasMoreVariations, setHasMoreVariations] = useState(true)
+  const [collisionInfo, setCollisionInfo] = useState<CollisionInfo>({
+    hasCollisions: false,
+    collisionCount: 0,
+    collidingElements: [],
+  })
 
-  // Future collision detection function (placeholder)
-  const hasCollisions = useCallback((circuitJson: CircuitJson): boolean => {
-    // TODO: Implement collision detection logic
-    // This should analyze the circuitJson to detect component overlaps
-    // For now, return false to continue animation
-    return false
-  }, [])
+  // Collision detection function
+  const checkCollisions = useCallback(
+    (circuitJson: CircuitJson): CollisionInfo => {
+      if (!circuitJson || !Array.isArray(circuitJson)) {
+        return {
+          hasCollisions: false,
+          collisionCount: 0,
+          collidingElements: [],
+        }
+      }
+
+      const collisionResult = detectCollisions(circuitJson)
+      setCollisionInfo(collisionResult)
+      return collisionResult
+    },
+    [],
+  )
 
   // Animation control functions
   const animateNextVariation = useCallback(() => {
@@ -46,7 +62,7 @@ export const useSlideVariationControl = (pinCount: number) => {
     setCurrentVariationIndex((prev) => prev + 1)
 
     // Queue next iteration after render completes
-    animationTimeout.current = setTimeout(animateNextVariation, 0)
+    animationTimeout.current = setTimeout(animateNextVariation, 0) // Added small delay to make animation visible
   }, [])
 
   const startAnimation = useCallback(() => {
@@ -89,14 +105,63 @@ export const useSlideVariationControl = (pinCount: number) => {
     }
   }, [])
 
+  // Enhanced animation with collision checking
+  const startAnimationWithCollisionDetection = useCallback(
+    (circuitJsonGetter: () => CircuitJson | null) => {
+      if (isAnimating) return
+
+      // Initialize iterator
+      variationIterator.current = generateSlideVariationsIterator(pinCount)
+      setIsAnimating(true)
+      setCurrentVariationIndex(0)
+      setHasMoreVariations(true)
+
+      const animateWithCheck = () => {
+        if (!variationIterator.current) return
+
+        // Check for collisions before continuing
+        const currentCircuitJson = circuitJsonGetter()
+        if (currentCircuitJson) {
+          const collisionResult = checkCollisions(currentCircuitJson)
+          if (!collisionResult.hasCollisions) {
+            // Stop animation when no collisions detected
+            setIsAnimating(false)
+            return
+          }
+        }
+
+        const result = variationIterator.current.next()
+
+        if (result.done) {
+          // No more variations available
+          setIsAnimating(false)
+          setHasMoreVariations(false)
+          return
+        }
+
+        // Update with the next variation and let React render
+        setAllSlideVariations(result.value)
+        setCurrentVariationIndex((prev) => prev + 1)
+
+        // Queue next iteration after render completes
+        animationTimeout.current = setTimeout(animateWithCheck, 0)
+      }
+
+      animateWithCheck()
+    },
+    [isAnimating, pinCount, checkCollisions],
+  )
+
   return {
     allSlideVariations,
     setAllSlideVariations,
     isAnimating,
     currentVariationIndex,
     hasMoreVariations,
-    hasCollisions,
+    checkCollisions,
+    collisionInfo,
     startAnimation,
+    startAnimationWithCollisionDetection,
     stopAnimation,
   }
 }

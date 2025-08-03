@@ -18,8 +18,10 @@ export default () => {
     isAnimating,
     currentVariationIndex,
     hasMoreVariations,
-    hasCollisions,
+    checkCollisions,
+    collisionInfo,
     startAnimation,
+    startAnimationWithCollisionDetection,
     stopAnimation,
   } = useSlideVariationControl(pinCount)
 
@@ -56,47 +58,111 @@ export default () => {
         onChangePinCount={setPinCount}
         onChangeAllSlideVariations={setAllSlideVariations}
       />
-      
+
       {/* Animation Controls */}
-      <div style={{ 
-        padding: '10px', 
-        border: '1px solid #ccc', 
-        margin: '10px 0',
-        backgroundColor: '#f9f9f9'
-      }}>
+      <div
+        style={{
+          padding: "10px",
+          border: "1px solid #ccc",
+          margin: "10px 0",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
         <h3>Slide Variation Animation</h3>
-        <div style={{ marginBottom: '10px', fontSize: '14px', color: '#666' }}>
-          Exploring all possible slide variation combinations for all {pinCount} pins, ordered by lowest total distance
+        <div style={{ marginBottom: "10px", fontSize: "14px", color: "#666" }}>
+          Exploring all possible slide variation combinations for all {pinCount}{" "}
+          pins, ordered by lowest total distance
         </div>
-        
-        <div style={{ marginBottom: '10px' }}>
-          <button 
-            onClick={startAnimation} 
+
+        <div style={{ marginBottom: "10px" }}>
+          <button
+            onClick={() =>
+              startAnimationWithCollisionDetection(() => circuitJson)
+            }
             disabled={isAnimating}
-            style={{ marginRight: '10px' }}
+            style={{ marginRight: "10px" }}
           >
-            Start Animation
+            Start Smart Animation
           </button>
-          <button 
-            onClick={stopAnimation} 
-            disabled={!isAnimating}
+          <button
+            onClick={startAnimation}
+            disabled={isAnimating}
+            style={{ marginRight: "10px" }}
           >
+            Start Animation (No Collision Check)
+          </button>
+          <button onClick={stopAnimation} disabled={!isAnimating}>
             Stop Animation
           </button>
         </div>
-        
+
         <div>
           <span>Variations explored: {currentVariationIndex}</span>
-          {isAnimating && <span style={{ marginLeft: '10px', color: 'green' }}>● Animating</span>}
-          {!hasMoreVariations && <span style={{ marginLeft: '10px', color: 'orange' }}>● Exploration complete</span>}
+          {isAnimating && (
+            <span style={{ marginLeft: "10px", color: "green" }}>
+              ● Animating
+            </span>
+          )}
+          {!hasMoreVariations && (
+            <span style={{ marginLeft: "10px", color: "orange" }}>
+              ● Exploration complete
+            </span>
+          )}
         </div>
-        
-        <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-          Current variations: {allSlideVariations.map((v, i) => `Pin${i+1}:[${v.join(',')}]`).join(' ')}
+
+        {/* Collision Detection Status */}
+        <div
+          style={{
+            marginTop: "10px",
+            padding: "5px",
+            backgroundColor: "#f5f5f5",
+            borderRadius: "3px",
+          }}
+        >
+          <strong>Collision Status:</strong>{" "}
+          {circuitJson ? (
+            collisionInfo.hasCollisions ? (
+              <span style={{ color: "red" }}>
+                ⚠ {collisionInfo.collisionCount} collision
+                {collisionInfo.collisionCount !== 1 ? "s" : ""} detected
+              </span>
+            ) : (
+              <span style={{ color: "green" }}>✓ No collisions detected</span>
+            )
+          ) : (
+            <span style={{ color: "#666" }}>Loading...</span>
+          )}
+          {circuitJson && (
+            <button
+              onClick={() => checkCollisions(circuitJson)}
+              style={{
+                marginLeft: "10px",
+                fontSize: "12px",
+                padding: "2px 6px",
+              }}
+            >
+              Check Now
+            </button>
+          )}
         </div>
-        
-        <div style={{ fontSize: '11px', color: '#888', marginTop: '5px', fontStyle: 'italic' }}>
-          Future: Animation will auto-stop when no collisions detected in circuit
+
+        <div style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>
+          Current variations:{" "}
+          {allSlideVariations
+            .map((v, i) => `Pin${i + 1}:[${v.join(",")}]`)
+            .join(" ")}
+        </div>
+
+        <div
+          style={{
+            fontSize: "11px",
+            color: "#888",
+            marginTop: "5px",
+            fontStyle: "italic",
+          }}
+        >
+          Animation will auto-stop when no collisions are detected in the
+          circuit
         </div>
       </div>
       {error && <div style={{ color: "red" }}>{error.toString()}</div>}

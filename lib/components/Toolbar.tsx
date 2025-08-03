@@ -12,7 +12,7 @@ export const Toolbar = (props: {
 }) => {
   const { variant, pinCount } = props
   const totalVariants = getTotalVariants(pinCount)
-  
+
   return (
     <div>
       <div>
