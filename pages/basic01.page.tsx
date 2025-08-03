@@ -2,7 +2,7 @@ import { Pattern1Pin } from "../lib/small-patterns/patterns-1pin/Pattern1Pin"
 import { RootCircuit } from "tscircuit"
 import { SchematicViewer } from "@tscircuit/schematic-viewer"
 import { Toolbar } from "./components/Toolbar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 
@@ -75,7 +75,14 @@ export const GeneratedBoard = ({
 
 export default () => {
   const [pinCount, setPinCount] = useState(3)
-  const [variant, setVariant] = useState(1)
+  const [variant, setVariant] = useState(() => {
+    const stored = localStorage.getItem("lastVariant")
+    return stored !== null ? Number(stored) : 1
+  })
+
+  useEffect(() => {
+    localStorage.setItem("lastVariant", String(variant))
+  }, [variant])
 
   const circuit = new RootCircuit()
 
