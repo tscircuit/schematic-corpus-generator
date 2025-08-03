@@ -27,6 +27,7 @@ export default () => {
     checkCollisions,
     collisionInfo,
     startAnimation,
+    startSmartAnimation,
     startAnimationWithCollisionDetection,
     stopAnimation,
   } = useSlideVariationControl(pinCount, usedDimensionsPerPin)
@@ -88,13 +89,20 @@ export default () => {
 
         <div style={{ marginBottom: "10px" }}>
           <button
+            onClick={() => startSmartAnimation(variant)}
+            disabled={isAnimating}
+            style={{ marginRight: "10px" }}
+          >
+            Start Smart Animation (New)
+          </button>
+          <button
             onClick={() =>
               startAnimationWithCollisionDetection(() => circuitJson)
             }
             disabled={isAnimating}
             style={{ marginRight: "10px" }}
           >
-            Start Smart Animation
+            Start Smart Animation (Legacy)
           </button>
           <button
             onClick={startAnimation}
@@ -173,8 +181,8 @@ export default () => {
             fontStyle: "italic",
           }}
         >
-          Animation will auto-stop when no collisions are detected in the
-          circuit
+          Smart Animation will auto-stop when no collisions are detected.
+          The new version uses a dedicated solver class that handles circuit rendering independently.
         </div>
       </div>
       {error && <div style={{ color: "red" }}>{error.toString()}</div>}
