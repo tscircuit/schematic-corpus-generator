@@ -2,6 +2,7 @@ import { RootCircuit } from "tscircuit"
 import { SchematicViewer } from "@tscircuit/schematic-viewer"
 import { Toolbar } from "../lib/components/Toolbar"
 import { GeneratedBoard } from "../lib/components/GeneratedBoard"
+import { CodeDisplay } from "../lib/components/CodeDisplay"
 import { useEffect, useMemo, useState } from "react"
 import { useSlideVariationControl } from "../lib/hooks/useSlideVariationControl"
 import { generatePatternApplications } from "../lib/utils/variantGenerator"
@@ -187,9 +188,9 @@ export default () => {
           <button
             onClick={() => {
               const dataStr = JSON.stringify(circuitJson, null, 2)
-              const dataBlob = new Blob([dataStr], { type: 'application/json' })
+              const dataBlob = new Blob([dataStr], { type: "application/json" })
               const url = URL.createObjectURL(dataBlob)
-              const link = document.createElement('a')
+              const link = document.createElement("a")
               link.href = url
               link.download = `circuit-p${pinCount}-v${variant}.json`
               document.body.appendChild(link)
@@ -198,18 +199,23 @@ export default () => {
               URL.revokeObjectURL(url)
             }}
             style={{
-              marginTop: '10px',
-              padding: '8px 16px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '14px'
+              marginTop: "10px",
+              padding: "8px 16px",
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "14px",
             }}
           >
             Download Circuit JSON
           </button>
+          <CodeDisplay
+            variant={variant}
+            pinCount={pinCount}
+            allSlideVariations={allSlideVariations}
+          />
         </div>
       )}
     </div>

@@ -20,6 +20,8 @@ export interface SolverOptions {
   maxIterations?: number
 }
 
+const ITERATIONS_BEFORE_YIELD = 100
+
 export class SlideVariationSolver {
   private options: SolverOptions
   private variationIterator: Generator<
@@ -105,61 +107,71 @@ export class SlideVariationSolver {
         !this.shouldStop &&
         this.currentVariationIndex < (this.options.maxIterations || 100e3)
       ) {
-        const result = this.variationIterator.next()
+        // Run ITERATIONS_BEFORE_YIELD iterations before yielding control
+        for (let i = 0; i < ITERATIONS_BEFORE_YIELD; i++) {
+          if (
+            this.shouldStop ||
+            this.currentVariationIndex >= (this.options.maxIterations || 100e3)
+          ) {
+            break
+          }
 
-        if (result.done) {
-          // No more variations to try
-          break
-        }
+          const result = this.variationIterator.next()
 
-        const slideVariations = result.value
+          if (result.done) {
+            // No more variations to try
+            break
+          }
 
-        // Render the circuit with current slide variations
-        const circuitJson = this.renderCircuit(slideVariations)
+          const slideVariations = result.value
 
-        if (!circuitJson) {
-          // Skip if circuit rendering failed
-          this.currentVariationIndex++
-          continue
-        }
+          // Render the circuit with current slide variations
+          const circuitJson = this.renderCircuit(slideVariations)
 
-        // Check for collisions
-        const collisionInfo = this.checkCollisions(circuitJson)
+          if (!circuitJson) {
+            // Skip if circuit rendering failed
+            this.currentVariationIndex++
+            continue
+          }
 
-        // Notify progress
-        if (this.options.onProgress) {
-          this.options.onProgress({
-            currentVariation: slideVariations,
-            variationIndex: this.currentVariationIndex,
-            collisionInfo,
-            isComplete: false,
-          })
-        }
+          // Check for collisions
+          const collisionInfo = this.checkCollisions(circuitJson)
 
-        // If no collisions, we found our solution!
-        if (!collisionInfo.hasCollisions) {
-          this.isRunning = false
-
-          // Final progress notification
+          // Notify progress
           if (this.options.onProgress) {
             this.options.onProgress({
               currentVariation: slideVariations,
               variationIndex: this.currentVariationIndex,
               collisionInfo,
-              isComplete: true,
+              isComplete: false,
             })
           }
 
-          return {
-            slideVariations,
-            variationIndex: this.currentVariationIndex,
-            collisionInfo,
+          // If no collisions, we found our solution!
+          if (!collisionInfo.hasCollisions) {
+            this.isRunning = false
+
+            // Final progress notification
+            if (this.options.onProgress) {
+              this.options.onProgress({
+                currentVariation: slideVariations,
+                variationIndex: this.currentVariationIndex,
+                collisionInfo,
+                isComplete: true,
+              })
+            }
+
+            return {
+              slideVariations,
+              variationIndex: this.currentVariationIndex,
+              collisionInfo,
+            }
           }
+
+          this.currentVariationIndex++
         }
 
-        this.currentVariationIndex++
-
-        // Yield control to allow other operations (non-blocking)
+        // Yield control to allow other operations (non-blocking) after ITERATIONS_BEFORE_YIELD iterations
         await new Promise((resolve) => setTimeout(resolve, 0))
       }
 

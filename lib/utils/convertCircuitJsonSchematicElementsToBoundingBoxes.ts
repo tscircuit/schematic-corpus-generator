@@ -12,7 +12,7 @@ export interface BoundingBox {
 
 /**
  * Converts Circuit JSON schematic elements into bounding boxes for collision detection
- * Supports schematic_component and schematic_text elements
+ * Supports schematic_component, schematic_text, and schematic_net_label elements
  */
 export function convertCircuitJsonSchematicElementsToBoundingBoxes(
   elements: AnyCircuitElement[],
@@ -23,19 +23,28 @@ export function convertCircuitJsonSchematicElementsToBoundingBoxes(
     if (element.type === "schematic_component") {
       const { center, size } = element
       const halfWidth = size.width / 2
-      const halfHeight = size.height / 2
-      
+      let halfHeight = size.height / 2
+
       // Check if symbol has vertical orientation (_up or _down) which would render labels to the right
-      const hasVerticalSymbol = element.symbol_name && 
-        (element.symbol_name.includes("_up") || element.symbol_name.includes("_down"))
-      
+      const hasVerticalSymbol =
+        element.symbol_name &&
+        (element.symbol_name.includes("_up") ||
+          element.symbol_name.includes("_down"))
+      const hasHorizontalSymbol =
+        element.symbol_name &&
+        (element.symbol_name.includes("_left") ||
+          element.symbol_name.includes("_right"))
+
       // Add extra space on the right for vertical symbols to account for rendered labels
-      const labelExtension = hasVerticalSymbol ? 0.3 : 0
+      const verticalExtension = hasVerticalSymbol ? 0.3 : 0
+      if (hasHorizontalSymbol) {
+        halfHeight += 0.15
+      }
 
       boundingBoxes.push({
         minX: center.x - halfWidth,
         minY: center.y - halfHeight,
-        maxX: center.x + halfWidth + labelExtension,
+        maxX: center.x + halfWidth + verticalExtension,
         maxY: center.y + halfHeight,
         elementId: element.schematic_component_id,
         schematicComponentId: element.schematic_component_id,
@@ -55,6 +64,28 @@ export function convertCircuitJsonSchematicElementsToBoundingBoxes(
         elementId: element.schematic_text_id,
         elementType: "schematic_text",
         schematicComponentId: element.schematic_component_id,
+      })
+    } else if (element.type === "schematic_net_label") {
+      const { center, anchor_position, symbol_name } = element
+      let halfWidth = Math.max(0.1, Math.abs(center.x - anchor_position!.x))
+      let halfHeight = Math.max(0.1, Math.abs(center.y - anchor_position!.y))
+
+      let minX = center.x - halfWidth
+      let minY = center.y - halfHeight
+      let maxX = center.x + halfWidth
+      let maxY = center.y + halfHeight
+
+      if (symbol_name === "ground_down") {
+        minY -= 0.6
+      }
+
+      boundingBoxes.push({
+        minX,
+        minY,
+        maxX,
+        maxY,
+        elementId: element.schematic_net_label_id,
+        elementType: "schematic_net_label",
       })
     }
   }
