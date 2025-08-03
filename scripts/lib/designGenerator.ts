@@ -176,10 +176,10 @@ export async function generateAllValidDesigns(
         variant,
         pinCount,
         usedDimensionsPerPin,
-        maxIterations: 100e3,
+        maxIterations: 250e3,
         onProgress: verbose
           ? (progress) => {
-              if (progress.variationIndex % 100 === 0) {
+              if (progress.variationIndex % 500 === 0) {
                 console.log(
                   `    🔄 Iteration ${progress.variationIndex}: ${JSON.stringify(progress.currentVariation)} (collisions: ${progress.collisionInfo.hasCollisions})`,
                 )
