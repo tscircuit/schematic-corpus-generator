@@ -4,15 +4,19 @@ import { SinglePinToVoltageDivider } from "./SinglePinToVoltageDivider"
 import { SinglePinResistorToSignal } from "./SinglePinResistorToSignal"
 
 const PATTERNS = [
-  (props: { pins: [number] }) => null,
+  (props: { pins: [number]; pinCount: number }) => null,
   SinglePinResistorToPower,
   SinglePinResistorToGround,
   SinglePinToVoltageDivider,
   SinglePinResistorToSignal,
 ]
 
-export const Pattern1Pin = (props: { pins: [number]; variant: number }) => {
-  const { pins, variant } = props
+export const Pattern1Pin = (props: {
+  pinCount: number
+  pins: [number]
+  variant: number
+}) => {
+  const { pins, variant, pinCount } = props
 
   const Pattern = PATTERNS[variant]
 
@@ -20,5 +24,7 @@ export const Pattern1Pin = (props: { pins: [number]; variant: number }) => {
     throw new Error(`Invalid variant: ${variant}`)
   }
 
-  return <Pattern pins={pins} />
+  return <Pattern pins={pins} pinCount={pinCount} />
 }
+
+Pattern1Pin.NUM_VARIANTS = PATTERNS.length
