@@ -17,7 +17,7 @@ export const SinglePinToVoltageDivider = (props: SmallPatternProps) => {
         name={`R${pin}_1`}
         resistance={1000}
         schX={pinPosition.x + 1 + centerOffset.x}
-        schY={pinPosition.y + 0.8 + centerOffset.y}
+        schY={pinPosition.y + 0.8 + centerOffset.y + slideVariations[2] * 0.1}
         schRotation="-90deg"
         connections={{
           pin1: `net.VCC`,
@@ -28,7 +28,7 @@ export const SinglePinToVoltageDivider = (props: SmallPatternProps) => {
         name={`R${pin}_2`}
         resistance={1000}
         schX={pinPosition.x + 1 + centerOffset.x}
-        schY={pinPosition.y - 0.8 + centerOffset.y}
+        schY={pinPosition.y - 0.8 + centerOffset.y - slideVariations[2] * 0.1}
         schRotation="-90deg"
         connections={{
           pin1: `U1.${pin}`,

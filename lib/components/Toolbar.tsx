@@ -1,3 +1,5 @@
+import { getTotalVariants } from "../utils/variantGenerator"
+
 export const Toolbar = (props: {
   variant: number
   pinCount: number
@@ -9,6 +11,8 @@ export const Toolbar = (props: {
   ) => void
 }) => {
   const { variant, pinCount } = props
+  const totalVariants = getTotalVariants(pinCount)
+  
   return (
     <div>
       <div>
@@ -19,8 +23,12 @@ export const Toolbar = (props: {
             name="variant"
             value={variant}
             min={0}
+            max={totalVariants - 1}
             onChange={(e: any) => props.onChangeVariant(Number(e.target.value))}
           />
+          <span style={{ marginLeft: 8, color: "#666" }}>
+            / {totalVariants - 1} (total: {totalVariants})
+          </span>
         </label>
         <label style={{ marginLeft: 16 }}>
           Pin Count:{" "}
