@@ -89,6 +89,7 @@ export interface GenerationOptions {
   verbose: boolean
   outputDir: string
   regenerate: boolean
+  worker?: { current: number; total: number }
 }
 
 export interface ValidDesign {
@@ -102,11 +103,23 @@ export interface ValidDesign {
 export async function generateAllValidDesigns(
   options: GenerationOptions,
 ): Promise<ValidDesign[]> {
-  const { pinCount, maxComponents, verbose, outputDir, regenerate } = options
+  const { pinCount, maxComponents, verbose, outputDir, regenerate, worker } = options
 
   console.log(`🔍 Calculating total variants for pin count ${pinCount}...`)
   const totalVariants = getTotalVariants(pinCount)
   console.log(`📈 Total variants to process: ${totalVariants.toLocaleString()}`)
+
+  // Calculate worker's variant range if worker is specified
+  let startVariant = 0
+  let endVariant = totalVariants
+  
+  if (worker) {
+    const variantsPerWorker = Math.ceil(totalVariants / worker.total)
+    startVariant = (worker.current - 1) * variantsPerWorker
+    endVariant = Math.min(startVariant + variantsPerWorker, totalVariants)
+    
+    console.log(`👷 Worker ${worker.current}/${worker.total} processing variants ${startVariant} to ${endVariant - 1} (${endVariant - startVariant} variants)`)
+  }
 
   const validDesigns: ValidDesign[] = []
   let processedCount = 0
@@ -116,22 +129,20 @@ export async function generateAllValidDesigns(
 
   const startTime = Date.now()
 
-  for (let variant = 0; variant < totalVariants; variant++) {
+  for (let variant = startVariant; variant < endVariant; variant++) {
     processedCount++
 
     if (
       verbose ||
-      processedCount % Math.max(1, Math.floor(totalVariants / 20)) === 0
+      processedCount % Math.max(1, Math.floor((endVariant - startVariant) / 20)) === 0
     ) {
       const elapsed = (Date.now() - startTime) / 1000
       const rate = processedCount / elapsed
-      const eta =
-        totalVariants > processedCount
-          ? (totalVariants - processedCount) / rate
-          : 0
+      const remaining = endVariant - variant - 1
+      const eta = remaining > 0 ? remaining / rate : 0
 
       console.log(
-        `⏳ Processing variant ${variant + 1}/${totalVariants} (${((variant / totalVariants) * 100).toFixed(1)}%) - ETA: ${Math.round(eta)}s`,
+        `⏳ Processing variant ${variant + 1}/${endVariant} (${(((variant - startVariant + 1) / (endVariant - startVariant)) * 100).toFixed(1)}%) - ETA: ${Math.round(eta)}s`,
       )
     }
 
