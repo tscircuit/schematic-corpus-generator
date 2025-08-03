@@ -30,18 +30,28 @@ export function getUsedDimensionsPerPin(
     let patternDimensions: number[] = []
 
     if (application.patternType === "Pattern1Pin") {
-      const patternComponent = Pattern1Pin.PATTERNS?.[application.patternVariant]
+      const patternComponent =
+        Pattern1Pin.PATTERNS?.[application.patternVariant]
       if (!patternComponent) {
-        throw new Error(`Pattern1Pin variant ${application.patternVariant} does not exist`)
+        throw new Error(
+          `Pattern1Pin variant ${application.patternVariant} does not exist`,
+        )
       }
-      patternDimensions = patternComponent.usedSlideVariationDimensions || [0, 1, 2]
+      patternDimensions = patternComponent.usedSlideVariationDimensions || [
+        0, 1, 2,
+      ]
       dimensionsPerPin[application.targetPin] = patternDimensions
     } else if (application.patternType === "Pattern2Pin") {
-      const patternComponent = Pattern2Pin.PATTERNS?.[application.patternVariant]
+      const patternComponent =
+        Pattern2Pin.PATTERNS?.[application.patternVariant]
       if (!patternComponent) {
-        throw new Error(`Pattern2Pin variant ${application.patternVariant} does not exist`)
+        throw new Error(
+          `Pattern2Pin variant ${application.patternVariant} does not exist`,
+        )
       }
-      patternDimensions = patternComponent.usedSlideVariationDimensions || [0, 1, 2]
+      patternDimensions = patternComponent.usedSlideVariationDimensions || [
+        0, 1, 2,
+      ]
       // For 2-pin patterns, only the first pin gets slide variations
       dimensionsPerPin[application.targetPin] = patternDimensions
       // The second pin doesn't get its own slide variations since the pattern controls both pins
@@ -62,16 +72,20 @@ export function getUsedDimensions(
 
   for (const application of patternApplications) {
     let patternComponent: any
-    
+
     if (application.patternType === "Pattern1Pin") {
       patternComponent = Pattern1Pin.PATTERNS?.[application.patternVariant]
       if (!patternComponent) {
-        throw new Error(`Pattern1Pin variant ${application.patternVariant} does not exist`)
+        throw new Error(
+          `Pattern1Pin variant ${application.patternVariant} does not exist`,
+        )
       }
     } else if (application.patternType === "Pattern2Pin") {
       patternComponent = Pattern2Pin.PATTERNS?.[application.patternVariant]
       if (!patternComponent) {
-        throw new Error(`Pattern2Pin variant ${application.patternVariant} does not exist`)
+        throw new Error(
+          `Pattern2Pin variant ${application.patternVariant} does not exist`,
+        )
       }
     }
 
@@ -88,7 +102,7 @@ export function getUsedDimensions(
   return Array.from(usedDimensions).sort()
 }
 
-const DISTANCE_BIASES = [4, 2, 1] as const
+const DISTANCE_BIASES = [3, 2, 1] as const
 /**
  * Calculate distance for a single pin variation
  */
