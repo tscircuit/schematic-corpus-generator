@@ -1,7 +1,9 @@
 import { getPinPosition } from "../utils/getPinPosition"
 import type { SmallPatternProps, SmallPatternComponent } from "../types"
 
-export const SinglePinToVoltageDivider: SmallPatternComponent = (props: SmallPatternProps) => {
+export const SinglePinToVoltageDivider: SmallPatternComponent = (
+  props: SmallPatternProps,
+) => {
   const { pins, pinCount, slideVariations } = props
   const pin = pins[0]!
   const pinPosition = getPinPosition(pin, pinCount)
@@ -17,7 +19,7 @@ export const SinglePinToVoltageDivider: SmallPatternComponent = (props: SmallPat
         name={`R${pin}_1`}
         resistance={1000}
         schX={pinPosition.x + 1 + centerOffset.x}
-        schY={pinPosition.y + 0.8 + centerOffset.y + slideVariations[2] * 0.1}
+        schY={pinPosition.y + 1 + centerOffset.y + slideVariations[2] * 0.1}
         schRotation="-90deg"
         connections={{
           pin1: `net.VCC`,
@@ -28,7 +30,7 @@ export const SinglePinToVoltageDivider: SmallPatternComponent = (props: SmallPat
         name={`R${pin}_2`}
         resistance={1000}
         schX={pinPosition.x + 1 + centerOffset.x}
-        schY={pinPosition.y - 0.8 + centerOffset.y - slideVariations[2] * 0.1}
+        schY={pinPosition.y - 1 + centerOffset.y - slideVariations[2] * 0.1}
         schRotation="-90deg"
         connections={{
           pin1: `U1.${pin}`,
