@@ -1,6 +1,6 @@
 import { Pattern1Pin } from "../small-patterns/patterns-1pin/Pattern1Pin"
 import { Pattern2Pin } from "../small-patterns/patterns-2pin/Pattern2Pin"
-import { getSubVariants } from "./getSubVariants"
+import { SubVariantGenerator } from "./getSubVariants"
 
 export interface PatternApplication {
   targetPin: number
@@ -31,8 +31,7 @@ export const generatePatternApplications = (
   const maxPatternsPerPin = Pattern1Pin.NUM_VARIANTS + Pattern2Pin.NUM_VARIANTS
   const subVariantCounts = Array(pinCount).fill(maxPatternsPerPin)
 
-  const patternChoices = getSubVariants(
-    variant,
+  const generator = new SubVariantGenerator(
     subVariantCounts,
     (subVariants) => {
       // Skip the case where all pins have no pattern (all zeros)
@@ -56,6 +55,11 @@ export const generatePatternApplications = (
       return false
     },
   )
+
+  const patternChoices = generator.get(variant)
+  if (patternChoices === null) {
+    throw new Error("Variant index out of range")
+  }
 
   const applications: PatternApplication[] = []
   const usedPins = new Set<number>()

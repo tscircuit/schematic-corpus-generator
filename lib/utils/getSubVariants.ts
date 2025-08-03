@@ -53,3 +53,125 @@ export const getSubVariants = (
 
   throw new Error("Variant index out of range")
 }
+
+/**
+ * An optimized generator class that lazily generates sub-variants instead of computing all at once.
+ * Supports both sequential .next() calls and random access via .get(v).
+ */
+export class SubVariantGenerator {
+  private subVariantCounts: number[]
+  private shouldSkip?: (subVariants: number[]) => boolean
+  private generatedVariants: Map<number, number[]> = new Map()
+  private currentIndex = 0
+  private maxIndex: number | null = null
+  private allCombinations: number[][] | null = null
+
+  constructor(
+    subVariantCounts: number[],
+    shouldSkip?: (subVariants: number[]) => boolean,
+  ) {
+    this.subVariantCounts = subVariantCounts
+    this.shouldSkip = shouldSkip
+  }
+
+  /**
+   * Gets the next variant in sequence. Returns null if no more variants exist.
+   */
+  next(): number[] | null {
+    const result = this.get(this.currentIndex)
+    if (result !== null) {
+      this.currentIndex++
+    }
+    return result
+  }
+
+  /**
+   * Gets the variant at the specified index. Uses memoization to avoid recomputation.
+   */
+  get(variantIndex: number): number[] | null {
+    // Check if we already computed this variant
+    if (this.generatedVariants.has(variantIndex)) {
+      return this.generatedVariants.get(variantIndex)!
+    }
+
+    // If we know the max index and the requested index exceeds it, return null
+    if (this.maxIndex !== null && variantIndex > this.maxIndex) {
+      return null
+    }
+
+    // Generate variants sequentially until we reach the requested index
+    this.ensureVariantExists(variantIndex)
+
+    return this.generatedVariants.get(variantIndex) ?? null
+  }
+
+  private ensureVariantExists(targetIndex: number): void {
+    // If we already have all combinations cached, use them directly
+    if (this.allCombinations === null) {
+      const key = this.subVariantCounts.join(",")
+      this.allCombinations =
+        combinationsCache.get(key) ??
+        (() => {
+          const combos = this.generateCombinations(this.subVariantCounts)
+          combinationsCache.set(key, combos)
+          return combos
+        })()
+    }
+
+    let count = 0
+    let lastValidIndex = -1
+
+    for (const subVariants of this.allCombinations) {
+      if (this.shouldSkip?.(subVariants)) continue
+
+      if (!this.generatedVariants.has(count)) {
+        this.generatedVariants.set(count, subVariants)
+      }
+
+      lastValidIndex = count
+
+      if (count === targetIndex) {
+        return
+      }
+
+      count++
+    }
+
+    // If we've processed all combinations, set the max index
+    if (this.maxIndex === null) {
+      this.maxIndex = lastValidIndex
+    }
+  }
+
+  private generateCombinations(
+    counts: number[],
+    current: number[] = [],
+  ): number[][] {
+    if (current.length === counts.length) {
+      return [current]
+    }
+
+    const results: number[][] = []
+    const currentIndex = current.length
+    for (let i = 0; i < counts[currentIndex]!; i++) {
+      results.push(...this.generateCombinations(counts, [...current, i]))
+    }
+    return results
+  }
+
+  /**
+   * Gets the total number of valid variants (computed lazily).
+   */
+  getTotalCount(): number {
+    if (this.maxIndex !== null) {
+      return this.maxIndex + 1
+    }
+
+    // Force generation of all variants to determine the count
+    let count = 0
+    while (this.get(count) !== null) {
+      count++
+    }
+    return count
+  }
+}

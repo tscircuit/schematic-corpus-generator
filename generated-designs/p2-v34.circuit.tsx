@@ -16,7 +16,7 @@ export default () => (
     name="R1"
     resistance="1000"
     schX="1.6"
-    schY="0.1"
+    schY="-0.1"
     schRotation="0deg"
     connections={{pin1: "U1.1", pin2: "net.SIG1"}}
     />
@@ -25,7 +25,7 @@ export default () => (
     name="R2_1"
     resistance="1000"
     schX="1.6"
-    schY="1.1"
+    schY="0.9"
     schRotation="-90deg"
     connections={{pin1: "net.VCC", pin2: "U1.2"}}
     />
@@ -33,7 +33,7 @@ export default () => (
     name="R2_2"
     resistance="1000"
     schX="1.6"
-    schY="-0.9000000000000001"
+    schY="-1.1"
     schRotation="-90deg"
     connections={{pin1: "U1.2", pin2: "net.GND"}}
     />
