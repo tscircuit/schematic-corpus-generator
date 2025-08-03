@@ -17,23 +17,26 @@ function getDim1Values(): number[] {
  */
 export function getUsedDimensionsPerPin(
   patternApplications: Array<{ patternVariant: number; targetPin: number }>,
-  pinCount: number
+  pinCount: number,
 ): number[][] {
   // Initialize with empty arrays for each pin
-  const dimensionsPerPin: number[][] = Array(pinCount).fill(null).map(() => [])
-  
+  const dimensionsPerPin: number[][] = Array(pinCount)
+    .fill(null)
+    .map(() => [])
+
   // Static mapping of pattern variants to their used dimensions
   const pattern1PinUsedDimensions: Record<number, number[]> = {
     0: [], // null pattern
-    1: [0], // SinglePinResistorToPower  
+    1: [0], // SinglePinResistorToPower
     2: [0], // SinglePinResistorToGround
     3: [0, 1, 2], // SinglePinToVoltageDivider
     4: [0, 1], // SinglePinResistorToSignal
   }
 
   for (const application of patternApplications) {
-    const patternDimensions = pattern1PinUsedDimensions[application.patternVariant]
-    
+    const patternDimensions =
+      pattern1PinUsedDimensions[application.patternVariant]
+
     if (patternDimensions) {
       dimensionsPerPin[application.targetPin] = patternDimensions
     } else {
@@ -71,12 +74,17 @@ export function getUsedDimensions(
   return Array.from(usedDimensions).sort()
 }
 
+const DISTANCE_BIASES = [4, 2, 1] as const
 /**
  * Calculate distance for a single pin variation
  */
 function calculatePinDistance(variation: [number, number, number]): number {
   const [d0, d1, d2] = variation
-  return Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2)
+  return Math.sqrt(
+    (d0 * d0) / DISTANCE_BIASES[0] +
+      (d1 * d1) / DISTANCE_BIASES[1] +
+      (d2 * d2) / DISTANCE_BIASES[2],
+  )
 }
 
 /**
@@ -96,7 +104,7 @@ function calculateTotalDistance(
  * This avoids memory issues by generating combinations on-demand.
  *
  * @param pinCount Number of pins to generate variations for
- * @param usedDimensionsPerPin Array of arrays, where each sub-array contains the dimensions 
+ * @param usedDimensionsPerPin Array of arrays, where each sub-array contains the dimensions
  *                            that should be varied for that specific pin. If not provided,
  *                            all dimensions are varied for all pins.
  */
@@ -138,7 +146,7 @@ export function* generateSlideVariationsIterator(
 
       // Get dimensions to vary for this specific pin
       const pinUsedDimensions = usedDimensionsPerPin?.[pinIndex] || [0, 1, 2]
-      
+
       // Try variations for current pin, only varying dimensions used by this pin's pattern
       const dim0Range = pinUsedDimensions.includes(0)
         ? Array.from({ length: dim0Max + 1 }, (_, i) => i)
