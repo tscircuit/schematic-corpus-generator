@@ -13,20 +13,20 @@ export default () => (
       schRotation={0}
     />
     <resistor
-    name="R1"
-    resistance="1000"
-    schX="1"
-    schY="-1.2"
-    schRotation="-90deg"
-    connections={{pin1: "U1.1", pin2: "net.GND"}}
+      name="R1"
+      resistance="1000"
+      schX="1"
+      schY="-1.2"
+      schRotation="-90deg"
+      connections={{ pin1: "U1.1", pin2: "net.GND" }}
     />
     <capacitor
-    name="C2_3"
-    capacitance="100nF"
-    schX="1.4"
-    schY="-0.1"
-    schRotation="-90deg"
-    connections={{pin1: "U1.2", pin2: "U1.3"}}
+      name="C2_3"
+      capacitance="100nF"
+      schX="1.4"
+      schY="-0.1"
+      schRotation="-90deg"
+      connections={{ pin1: "U1.2", pin2: "U1.3" }}
     />
   </board>
 )

@@ -13,64 +13,64 @@ export default () => (
       schRotation={0}
     />
     <resistor
-    name="R1"
-    resistance="1000"
-    schX="1"
-    schY="1.2"
-    schRotation="90deg"
-    connections={{pin1: "U1.1", pin2: "net.VCC"}}
+      name="R1"
+      resistance="1000"
+      schX="1"
+      schY="1.2"
+      schRotation="90deg"
+      connections={{ pin1: "U1.1", pin2: "net.VCC" }}
     />
     <group>
-    <capacitor
-    name="C2_1"
-    capacitance="100nF"
-    schX="1.4"
-    schY="-0.7999999999999999"
-    schRotation="-90deg"
-    connections={{pin1: "U1.2", pin2: "net.GND"}}
-    />
-    <capacitor
-    name="C2_2"
-    capacitance="100nF"
-    schX="2.4"
-    schY="-0.7999999999999999"
-    schRotation="-90deg"
-    connections={{pin1: "U1.2", pin2: "net.GND"}}
-    />
-    <capacitor
-    name="C2_3"
-    capacitance="100nF"
-    schX="3.4"
-    schY="-0.7999999999999999"
-    schRotation="-90deg"
-    connections={{pin1: "U1.2", pin2: "net.GND"}}
-    />
-    <capacitor
-    name="C2_4"
-    capacitance="100nF"
-    schX="4.4"
-    schY="-0.7999999999999999"
-    schRotation="-90deg"
-    connections={{pin1: "U1.2", pin2: "net.GND"}}
-    />
+      <capacitor
+        name="C2_1"
+        capacitance="100nF"
+        schX="1.4"
+        schY="-0.7999999999999999"
+        schRotation="-90deg"
+        connections={{ pin1: "U1.2", pin2: "net.GND" }}
+      />
+      <capacitor
+        name="C2_2"
+        capacitance="100nF"
+        schX="2.4"
+        schY="-0.7999999999999999"
+        schRotation="-90deg"
+        connections={{ pin1: "U1.2", pin2: "net.GND" }}
+      />
+      <capacitor
+        name="C2_3"
+        capacitance="100nF"
+        schX="3.4"
+        schY="-0.7999999999999999"
+        schRotation="-90deg"
+        connections={{ pin1: "U1.2", pin2: "net.GND" }}
+      />
+      <capacitor
+        name="C2_4"
+        capacitance="100nF"
+        schX="4.4"
+        schY="-0.7999999999999999"
+        schRotation="-90deg"
+        connections={{ pin1: "U1.2", pin2: "net.GND" }}
+      />
     </group>
     <group>
-    <resistor
-    name="R3_1"
-    resistance="1000"
-    schX="1.8"
-    schY="0.29999999999999993"
-    schRotation="-90deg"
-    connections={{pin1: "net.VCC", pin2: "U1.3"}}
-    />
-    <resistor
-    name="R3_2"
-    resistance="1000"
-    schX="1.8"
-    schY="-1.9000000000000001"
-    schRotation="-90deg"
-    connections={{pin1: "U1.3", pin2: "net.GND"}}
-    />
+      <resistor
+        name="R3_1"
+        resistance="1000"
+        schX="1.8"
+        schY="0.29999999999999993"
+        schRotation="-90deg"
+        connections={{ pin1: "net.VCC", pin2: "U1.3" }}
+      />
+      <resistor
+        name="R3_2"
+        resistance="1000"
+        schX="1.8"
+        schY="-1.9000000000000001"
+        schRotation="-90deg"
+        connections={{ pin1: "U1.3", pin2: "net.GND" }}
+      />
     </group>
   </board>
 )

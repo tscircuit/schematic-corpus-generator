@@ -101,13 +101,17 @@ Examples:
   if (values.worker) {
     const match = values.worker.match(/^(\d+)\/(\d+)$/)
     if (!match) {
-      console.error("Error: worker must be in format 'current/total' (e.g., '1/3')")
+      console.error(
+        "Error: worker must be in format 'current/total' (e.g., '1/3')",
+      )
       process.exit(1)
     }
     const current = parseInt(match[1])
     const total = parseInt(match[2])
     if (current < 1 || current > total || total < 1) {
-      console.error("Error: worker fraction must be valid (e.g., '1/3', '2/3', '3/3')")
+      console.error(
+        "Error: worker fraction must be valid (e.g., '1/3', '2/3', '3/3')",
+      )
       process.exit(1)
     }
     worker = { current, total }
@@ -140,16 +144,20 @@ async function spawnWorkers(options: CodegenOptions): Promise<void> {
   }
 
   const workers: Promise<void>[] = []
-  
+
   for (let i = 1; i <= options.parallelWorkers; i++) {
     const workerArgs = [
       "scripts/codegen.ts",
-      "--pin-count", options.pinCount.toString(),
-      "--output-dir", options.outputDir,
-      "--max-components", options.maxComponents.toString(),
-      "--worker", `${i}/${options.parallelWorkers}`,
+      "--pin-count",
+      options.pinCount.toString(),
+      "--output-dir",
+      options.outputDir,
+      "--max-components",
+      options.maxComponents.toString(),
+      "--worker",
+      `${i}/${options.parallelWorkers}`,
     ]
-    
+
     if (options.verbose) workerArgs.push("--verbose")
     if (options.regenerate) workerArgs.push("--regenerate")
 
@@ -161,24 +169,36 @@ async function spawnWorkers(options: CodegenOptions): Promise<void> {
       child.stdout?.on("data", (data) => {
         const output = data.toString()
         // Prefix worker output with worker ID
-        process.stdout.write(`[Worker ${i}/${options.parallelWorkers}] ${output}`)
+        process.stdout.write(
+          `[Worker ${i}/${options.parallelWorkers}] ${output}`,
+        )
       })
 
       child.stderr?.on("data", (data) => {
         const output = data.toString()
-        process.stderr.write(`[Worker ${i}/${options.parallelWorkers}] ${output}`)
+        process.stderr.write(
+          `[Worker ${i}/${options.parallelWorkers}] ${output}`,
+        )
       })
 
       child.on("close", (code) => {
         if (code === 0) {
           resolve()
         } else {
-          reject(new Error(`Worker ${i}/${options.parallelWorkers} exited with code ${code}`))
+          reject(
+            new Error(
+              `Worker ${i}/${options.parallelWorkers} exited with code ${code}`,
+            ),
+          )
         }
       })
 
       child.on("error", (err) => {
-        reject(new Error(`Worker ${i}/${options.parallelWorkers} failed to start: ${err.message}`))
+        reject(
+          new Error(
+            `Worker ${i}/${options.parallelWorkers} failed to start: ${err.message}`,
+          ),
+        )
       })
     })
 
@@ -187,7 +207,9 @@ async function spawnWorkers(options: CodegenOptions): Promise<void> {
 
   try {
     await Promise.all(workers)
-    console.log(`\n✅ All ${options.parallelWorkers} workers completed successfully!`)
+    console.log(
+      `\n✅ All ${options.parallelWorkers} workers completed successfully!`,
+    )
   } catch (error) {
     console.error(`\n❌ One or more workers failed:`, error)
     process.exit(1)
@@ -199,24 +221,36 @@ async function main() {
 
   // If parallel workers specified, spawn workers instead of running directly
   if (options.parallelWorkers) {
-    console.log(`🚀 Starting ${options.parallelWorkers} parallel workers for pin count ${options.pinCount}`)
+    console.log(
+      `🚀 Starting ${options.parallelWorkers} parallel workers for pin count ${options.pinCount}`,
+    )
     console.log(`📁 Output directory: ${options.outputDir}`)
     console.log(`🔧 Max components per design: ${options.maxComponents}`)
-    console.log(`📝 Verbose logging: ${options.verbose ? "enabled" : "disabled"}`)
-    console.log(`🔄 Regenerate existing files: ${options.regenerate ? "enabled" : "disabled"}`)
+    console.log(
+      `📝 Verbose logging: ${options.verbose ? "enabled" : "disabled"}`,
+    )
+    console.log(
+      `🔄 Regenerate existing files: ${options.regenerate ? "enabled" : "disabled"}`,
+    )
     console.log("")
-    
+
     await spawnWorkers(options)
     return
   }
 
   // Single worker mode (including when --worker is specified)
-  const workerInfo = options.worker ? ` (Worker ${options.worker.current}/${options.worker.total})` : ""
-  console.log(`🚀 Starting codegen for pin count ${options.pinCount}${workerInfo}`)
+  const workerInfo = options.worker
+    ? ` (Worker ${options.worker.current}/${options.worker.total})`
+    : ""
+  console.log(
+    `🚀 Starting codegen for pin count ${options.pinCount}${workerInfo}`,
+  )
   console.log(`📁 Output directory: ${options.outputDir}`)
   console.log(`🔧 Max components per design: ${options.maxComponents}`)
   console.log(`📝 Verbose logging: ${options.verbose ? "enabled" : "disabled"}`)
-  console.log(`🔄 Regenerate existing files: ${options.regenerate ? "enabled" : "disabled"}`)
+  console.log(
+    `🔄 Regenerate existing files: ${options.regenerate ? "enabled" : "disabled"}`,
+  )
   console.log("")
 
   try {
