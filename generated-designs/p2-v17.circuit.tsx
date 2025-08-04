@@ -13,20 +13,20 @@ export default () => (
       schRotation={0}
     />
     <resistor
-    name="R1"
-    resistance="1000"
-    schX="1"
-    schY="-1.0999999999999999"
-    schRotation="-90deg"
-    connections={{pin1: "U1.1", pin2: "net.GND"}}
+      name="R1"
+      resistance="1000"
+      schX="1"
+      schY="-1.0999999999999999"
+      schRotation="-90deg"
+      connections={{ pin1: "U1.1", pin2: "net.GND" }}
     />
     <resistor
-    name="R2"
-    resistance="1000"
-    schX="1.8"
-    schY="-1.0999999999999999"
-    schRotation="-90deg"
-    connections={{pin1: "U1.2", pin2: "net.GND"}}
+      name="R2"
+      resistance="1000"
+      schX="1.8"
+      schY="-1.0999999999999999"
+      schRotation="-90deg"
+      connections={{ pin1: "U1.2", pin2: "net.GND" }}
     />
   </board>
 )

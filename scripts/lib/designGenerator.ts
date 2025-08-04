@@ -103,7 +103,8 @@ export interface ValidDesign {
 export async function generateAllValidDesigns(
   options: GenerationOptions,
 ): Promise<ValidDesign[]> {
-  const { pinCount, maxComponents, verbose, outputDir, regenerate, worker } = options
+  const { pinCount, maxComponents, verbose, outputDir, regenerate, worker } =
+    options
 
   console.log(`🔍 Calculating total variants for pin count ${pinCount}...`)
   const totalVariants = getTotalVariants(pinCount)
@@ -112,13 +113,15 @@ export async function generateAllValidDesigns(
   // Calculate worker's variant range if worker is specified
   let startVariant = 0
   let endVariant = totalVariants
-  
+
   if (worker) {
     const variantsPerWorker = Math.ceil(totalVariants / worker.total)
     startVariant = (worker.current - 1) * variantsPerWorker
     endVariant = Math.min(startVariant + variantsPerWorker, totalVariants)
-    
-    console.log(`👷 Worker ${worker.current}/${worker.total} processing variants ${startVariant} to ${endVariant - 1} (${endVariant - startVariant} variants)`)
+
+    console.log(
+      `👷 Worker ${worker.current}/${worker.total} processing variants ${startVariant} to ${endVariant - 1} (${endVariant - startVariant} variants)`,
+    )
   }
 
   const validDesigns: ValidDesign[] = []
@@ -134,7 +137,9 @@ export async function generateAllValidDesigns(
 
     if (
       verbose ||
-      processedCount % Math.max(1, Math.floor((endVariant - startVariant) / 20)) === 0
+      processedCount %
+        Math.max(1, Math.floor((endVariant - startVariant) / 20)) ===
+        0
     ) {
       const elapsed = (Date.now() - startTime) / 1000
       const rate = processedCount / elapsed
@@ -296,9 +301,7 @@ export async function generateAllValidDesigns(
     `  Successfully solved: ${solvedCount.toLocaleString()} (${((solvedCount / processedCount) * 100).toFixed(1)}%)`,
   )
   if (skippedCount > 0) {
-    console.log(
-      `  Skipped existing files: ${skippedCount.toLocaleString()}`,
-    )
+    console.log(`  Skipped existing files: ${skippedCount.toLocaleString()}`)
   }
   console.log(`  Total time: ${elapsed.toFixed(1)}s`)
   console.log(
