@@ -60,16 +60,16 @@ export function filterTooManyComponents(
   // Count the total number of components that will be created
   let componentCount = 0
 
+  // Match the PATTERNS order in Pattern1Pin and Pattern2Pin. Count only
+  // applied pattern components, as before; the fixed main chip is not included.
+  const componentCounts = {
+    Pattern1Pin: [0, 1, 1, 2, 1, 2, 3, 4],
+    Pattern2Pin: [0, 1, 2],
+  }
+
   for (const app of patternApplications) {
-    // Each pattern application creates at least one component
-    // Some patterns may create multiple components (e.g., voltage dividers create 2 resistors)
-    if (app.patternType === "Pattern1Pin" && app.patternVariant === 3) {
-      // SinglePinToVoltageDivider creates 2 resistors (variant 3 in Pattern1Pin)
-      componentCount += 2
-    } else {
-      // Most patterns create 1 component
-      componentCount += 1
-    }
+    componentCount +=
+      componentCounts[app.patternType]?.[app.patternVariant] ?? 1
   }
 
   if (componentCount > maxComponents) {
