@@ -61,8 +61,9 @@ export const generatePatternApplications = (
   // Each pin position can have:
   // - 0: no pattern
   // - 1 to Pattern1Pin.NUM_VARIANTS-1: 1-pin patterns (variants 1 to NUM_VARIANTS-1)
-  // - Pattern1Pin.NUM_VARIANTS to Pattern1Pin.NUM_VARIANTS+Pattern2Pin.NUM_VARIANTS-1: 2-pin patterns
-  const maxPatternsPerPin = Pattern1Pin.NUM_VARIANTS + Pattern2Pin.NUM_VARIANTS
+  // - Pattern1Pin.NUM_VARIANTS and above: non-null 2-pin patterns
+  const maxPatternsPerPin =
+    Pattern1Pin.NUM_VARIANTS + Pattern2Pin.NUM_VARIANTS - 1
   const subVariantCounts: number[] = Array(pinCount).fill(maxPatternsPerPin)
 
   const generator = getSubVariantGenerator(pinCount, subVariantCounts)
@@ -93,7 +94,7 @@ export const generatePatternApplications = (
       })
     } else {
       // 2-pin pattern
-      const pattern2PinVariant = choice - Pattern1Pin.NUM_VARIANTS
+      const pattern2PinVariant = choice - Pattern1Pin.NUM_VARIANTS + 1
       applications.push({
         targetPin: pinIndex,
         patternVariant: pattern2PinVariant,
